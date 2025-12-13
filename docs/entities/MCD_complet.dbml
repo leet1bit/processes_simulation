@@ -1,4 +1,5 @@
 Table PCB {
+  var_adress hex // only in mcd not code
   pcb_id int pk
   process_name char(50)
   user_id char(20) // current user
@@ -29,7 +30,7 @@ Table PCB {
 Table process_statistics {
   var_name hex // only here not code
   temps_arrive time // quand il etait ajouté au process_table
-  temps_creation time // quand la structure etait creer
+  temps_creation date_calendrier // quand la structure etait creer
   temps_fin time // when marked terminated
 
   temps_attente float // gap between temps arrive et temps exec
@@ -47,6 +48,7 @@ enum etat_enum {
 // should allocate all pcbs in memory then identify them
 // store all the structures in a list store pointer to a variable ex: proc_table
 Table process_table {
+  var_adress hex // not in the code
   pid int // l id affecté au pcb
   pcb_id int [ref : > PCB.pcb_id] // l'id definie en pcb 
 }
@@ -65,13 +67,14 @@ Table ready_queue {
   size int // n ready_queue_elements
 }
 
-Table resources_element { // enum in dbml because mkatsupportech creation d LIST but list in code
+Table ressources_element { // enum in dbml because mkatsupportech creation d LIST but list in code
+  var_adress hex // only in mcd
   ressource_name char // name of the ressource "a" "b" anything
   disponibility bool // 1 dispo 0 no
 }
 
 Table ressources_list { // a simple list table just for dbml
-  element resources_element
+  element resources_element [ref: > ressources_element.var_adress]
 }
 
 Table blocked_queue_elemnt {
@@ -82,6 +85,7 @@ Table blocked_queue_elemnt {
 
 // blocked queue function should check every 1ms ressources
 Table blocked_queue {
+  var_adress hex // only here not code
   elemnts list [ref : > blocked_queue_elemnt.variable_adress] // blocked_queue simple list not structure, dbml dont support list 
 }
 
@@ -96,62 +100,56 @@ enum algorithms {
 
 // sh
 Table ordonnanceur { // which is schedular
+  var_adress hex // only in mcd
   aligorithm algorithms // specified by user
 
-  in_exec_proc_pcb PCB // pcb du process en cours d execution
+  in_exec_proc_pcb pointerPCB [ref : > PCB.var_adress] // pointeur vers pcb du process en cours d execution
 
   quantum float // for rr
-  start time 
-  end time
+  start_time time 
+  end_time time
   cpu_time_used float // en ms: end - start
+  
+  current_time float // en ms
+  ready_queue ready_queue
+  process_table process_table // list des processus
 
+  is_runing bool
+  is_paused bool
+
+  statistics ordonnanceur_statistics [ref : > ordonnanceur_statistics.var_adress] // pointeur vers ordonnanceur_statistics
+}
+
+Table ordonnanceur_statistics {
+  var_adress hex // only here not in structs
+  cpu_total_temps_usage float // temps total pour tout processus cpu occupe
+  cpu_temps_unoccuped float // temps total que le cpu n'etait pas utilise
+  context_switch int // nombre total de changement de context (changement de processus a executer)
+  total_temps_attente float // somme de temps attente de tout processus
+
+  // when a process terminate
+  total_turnround float // somme de temps turnround (temps termine - temps arrive)
+  processus_termine_count int // les processus terminé
+  troughtput float // process terminé / total time en ms
 }
 
 Table ressource_manager {
+  var_adress hex // only in mcd
   ressources ressources_list [ref : > ressources_list.element]
   ressource_count int
 } 
 
 Table process_manager {
-  process_table pointeur // pointe vers process table
+  var_adress hex // only in mcd
+  process_table pointeur [ref: > process_table.var_adress] // pointe vers process table
   process_count int // nombre des process
+  blocked_queue blocked_queue [ref : > blocked_queue.var_adress]
   ready_queue ready_queue [ref : > ready_queue.head]
-  blocked_queue blocked_queue // [ref : > blocked_queue]
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Table simualtor {
+  ressource_manager pointeurRessourcemanager [ref : > ressource_manager.var_adress ] // pointeur vers ressource manager
+  process_manager  pointerProcess_manager [ref : > process_manager.var_adress] // pointeur vers process manager
+  schedular ordonnanceur [ref : > ordonnanceur.var_adress] // depens on the choice of the user
+  runing bool // state
+}

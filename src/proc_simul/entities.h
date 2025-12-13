@@ -53,6 +53,12 @@ typedef struct {
     PCB* pid_sibling_previous; // pointeur vers previous sib
 } PCB;
 
+// structures nedded par les fonctions du process_manager
+typedef struct { // used by process manager: many iteraction over process list but obe contact with ready queue for time reducing
+    PCB* first_element;
+    int size;
+} pcb_list; // stand for pcb first came
+
 typedef struct {
     int pid; // l identifier du processus
     PCB* pcb; // l id du pcb du processus
@@ -105,6 +111,10 @@ typedef struct {
     int ressource_count; // n ressources
 } RESSOURCE_MANAGER;
 
+// fonctions du process manager
+typedef
+
+
 typedef struct {
     PROCESS_TABLE* process_table; // pointeur vers process table
     int process_count; // n processes
@@ -120,8 +130,25 @@ typedef struct {
     bool runing;
 } SIMULATOR;
 
-// structures nedded par les fonctions
-typedef struct { // used by process manager: many iteraction over process list but obe contact with ready queue for time reducing
-    PCB* first_element;
-    int size;
-} pcb_list; // stand for pcb first came
+/*
+// Déclaration anticipée
+typedef struct Statistics Statistics;
+
+// Type de fonction
+typedef float (*GetUsageFunc)(Statistics*);
+
+// Définition de la structure
+struct Statistics {
+    float cpu_busy_ms;
+    float cpu_idle_ms;
+    int context_switches;
+    float total_waiting_time;
+    float total_turnaround_time;
+    
+    // Méthodes (pointeurs de fonction)
+    GetUsageFunc get_cpu_usage;
+    float (*get_avg_waiting)(Statistics*);
+    float (*get_avg_turnaround)(Statistics*);
+    void (*print)(Statistics*);
+};
+*/
