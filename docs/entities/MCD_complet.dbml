@@ -10,12 +10,13 @@ Table PCB {
   mais on va la stimuler avec un list des char,
   chaque char can either indicate to (use or dont use) ressource
   */
-  compteur_programe list(char)
+  instruction list(resources_element) // instruction that dont need ressource should be market as by example "pass"
+  compteur_programe int // total instruction counte
   memoire_necessaire float // memoire necessaire en mbit
   
-  temps_necessaire float // (burst) temps necessaire pour l exec ; burst = compte_temps + temps_restant
-  compte_temps float // temps cpu consomme en ms "initialise a burst decreasing bu schedular"
-  temps_restant float // remaining time in ms
+  burst_time float // (burst) temps necessaire pour l exec ; burst = compte_temps + temps_restant
+  cpu_time_used float // temps cpu consomme en ms "initialise a 0 increasing bu schedular"
+  remaining_time float // temps restant en ms (initializer a burs decreasing jusqua 0)
   cpu_usage int // *importante* need cpu_logs in every instruct we log wich process did it and we sum process divide by total
 
   statistics process_statistics [ref : > process_statistics.var_name]
@@ -98,7 +99,7 @@ enum algorithms {
 Table ordonnanceur { // which is schedular
   aligorithm algorithms // specified by user
   ready_queue ready_queue [ref : > ready_queue.head]
-  in_execution int [ref : > process_table.pid] // process en cours d execution
+  in_exec_proc_pcb PCB // pcb du process en cours d execution
   blocked_queue blocked_queue // [ref : > blocked_queue]
 
   quantum float // for rr
