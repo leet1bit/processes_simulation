@@ -36,5 +36,25 @@ typedef struct {
     int remaining_time; // temps restant : = burst - cpu_time_used
     long cpu_usage; // 
 
-    
+    PROCESS_STATISTICS statistics;
+
+    int* pid_childrens;
+    PCB* pid_sibling_next; // pointeur vers next sib
+    PCB* pid_sibling_previous; // pointeur vers previous sib
 } PCB;
+
+typedef struct {
+    int pid; // l identifier du processus
+    int pcb_id; // l id du pcb du processus
+} PROCESS_TABLE;
+
+typedef struct {
+    int pid; // processus id
+    READY_QUEUE_ELEMENT* next; // pointeur vers element suivant
+    READY_QUEUE_ELEMENT* previous; // pointeur vers element precedent
+} READY_QUEUE_ELEMENT;
+
+typedef struct {
+    READY_QUEUE_ELEMENT* head; // pointeur vers premier element du chaine
+
+} READY_QUEUE;
