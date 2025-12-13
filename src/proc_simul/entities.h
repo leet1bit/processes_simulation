@@ -76,6 +76,61 @@ enum {
 
 typedef struct {
     Algorithms algorithm;
-    READY_QUEUE ready_queue
-
+    READY_QUEUE ready_queue;
+    BLOCKED_QUEUE_ELEMENT* blocked_queue; // using malloc later to allocate the size of given N processus
+    PCB* exec_proc; // processus en train de s'executer
+    
+    
+    
+    RESSOURCES_ELEMENT* ressources; // again using malloc to allocate N ressources
 } ORDONNANCEUR;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+// scheduling.h
+#ifndef SCHEDULING_H
+#define SCHEDULING_H
+
+#include "process.h"
+
+// Déclaration des types de fonctions
+typedef Process* (*SelectNextFunc)(void* context);
+typedef void (*OnArrivalFunc)(void* context, Process* p);
+typedef void (*OnCompletionFunc)(void* context, Process* p);
+typedef void (*OnQuantumExpiryFunc)(void* context);
+typedef void (*OnIOCompletionFunc)(void* context, Process* p);
+
+typedef struct SchedulingAlgorithm {
+    char name[20];
+    
+    // Pointeurs de fonction
+    SelectNextFunc select_next;
+    OnArrivalFunc on_process_arrival;
+    OnCompletionFunc on_process_completion;
+    OnQuantumExpiryFunc on_quantum_expiry;
+    OnIOCompletionFunc on_io_completion;
+    
+    void* algorithm_data;
+    
+} SchedulingAlgorithm;
+
+// Fonctions de création
+SchedulingAlgorithm* create_fcfs_algorithm();
+SchedulingAlgorithm* create_rr_algorithm(int quantum);
+SchedulingAlgorithm* create_sjf_algorithm();
+
+#endif
+*/
