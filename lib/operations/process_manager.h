@@ -19,7 +19,6 @@ BLOCKED_QUEUE* op_create_blocked_queue(int size) {
 
 
 // process table related  (when creating the pcb pcd_statistics should also be created)
-
 pcbs_and_size* op_get_all_processus(FILE* buffer) {
 
 }
