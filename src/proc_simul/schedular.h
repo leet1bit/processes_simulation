@@ -3,7 +3,7 @@
 #include "process.h" // for pcb
 #include "simulator.h" // for SIMULATOR
 
-enum {
+typedef enum {
     RR, SRTF, PPP, FCFS, SJF
 } Algorithms;
 

@@ -50,6 +50,7 @@ typedef struct {
     int process_count; // n processes
     READY_QUEUE* ready_queue; // pointer to ready chaine
     BLOCKED_QUEUE* blocked_queue; // pointer to blocked
+    // RESSOURCE* ressources; // in the retrieving should retrieve ressources needed also if a ressource doesn't match the enumeration throw an error (ressource anavailable)
 
     // functions
     // on start
@@ -58,7 +59,7 @@ typedef struct {
     BLOCKED_QUEUE* (*create_blocked_queue)(int size); // will initialize by size 0 i think
 
     // process table related
-    pcbs_and_size* (*get_all_processus)(FILE* buffer); // should count while retrieving return struct that has first PCB* and size we'll get all process append them to a listn then assign pid,after that we ll push them into process list
+    pcbs_and_size* (*get_all_processus)(FILE* buffer); // should count while retrieving return struct that has first PCB* and size we'll get all process append them to a listn then assign pid,after that we ll push them into process list  *maybe*[ should check the ressources of each process compare to enumeration,]
     pcbs_and_size* (*sort_by_fc)(pcbs_and_size* process_list); // process_list created by get_all_processus
     pcbs_and_size* (*sort_by_rt)(pcbs_and_size* process_list); // process_list by get_all_processus
     pcbs_and_size* (*sort_by_priority)(pcbs_and_size* process_list);  // same

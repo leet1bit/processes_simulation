@@ -2,7 +2,7 @@
 
 
 
-enum {
+typedef enum {
     MEMORY, SOCKET, FILE, CPU, DEVICE_A, DEVICE_B, DEVICE_C
 } RESSOURCE;
 
@@ -16,9 +16,20 @@ typedef struct {
     RESSOURCE_ELEMENT* head; // first element in chaine
     RESSOURCE_ELEMENT* tail; // last one
     int size; // how many element in the chaine<
-} RESSOURCES_LIST;
+} RESSOURCES_LIST; // chain ressource because we need size
 
 typedef struct {
-    RESSOURCE_ELEMENT* ressources; // again using malloc to allocate N ressources
+    RESSOURCES_LIST* ressources; // again using malloc to allocate N ressources
     int ressource_count; // n ressources
+
+    //functions
+    // on start
+    RESSOURCE_LIST* (*create_ressource_list)();
+
+    // ressources operations
+    RESSOURCE_ELEMENT* (*look_for_ressource_in_list)(char* ressource_name);
+    bool (*mark_ressource_available)(RESSOURCE* ressource);
+    bool (*mark_ressource_unavailable)(RESSOURCE* ressource);
+    bool (*check_if_ressource_available)(RESSOURCE* ressource); // if available return  if not return 0
+    
 } RESSOURCE_MANAGER;

@@ -12,11 +12,11 @@
 
 
 
-enum {
+typedef enum {
     READY, BLOCKED, EXECUTION, TERMINATED
 } E_etat;
 
-enum {
+typedef enum {
     // ressources
 } RESSOURCE;
 
@@ -26,11 +26,11 @@ typedef struct {
     bool disponibilite; // dispo ou non 1 / 0
 } RESSOURCES_ELEMENT;
 
-enum {
+typedef enum {
     // should define types
 } INSTRUCTION_TYPE; // ressources
 
-enum {
+typedef enum {
     NOT_STARTED, EXECUTING, BLOCKED, COMPLETED
 } INSTRUCTION_STATE;
 
@@ -113,7 +113,7 @@ typedef struct { // circular chaine
     int size; // how many elements
 } BLOCKED_QUEUE;
 
-enum {
+typedef enum {
     RR, SRTF, PPP, FCFS, SJF
 } Algorithms;
 

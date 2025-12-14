@@ -3,12 +3,12 @@
 
 #include "ressource_manager.h" // for RESSOURCES_ELEMENT
 
-enum {
+typedef enum {
     READY, BLOCKED, EXECUTION, TERMINATED
 } E_etat;
 
 
-enum {
+typedef enum {
     NOT_STARTED, EXECUTING, BLOCKED, COMPLETED
 } INSTRUCTION_STATE;
 
