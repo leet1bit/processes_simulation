@@ -29,6 +29,24 @@ typedef struct {
     int tournround; // temps terminer - temps arrive
 } PROCESS_STATISTICS;
 
+enum {
+    // should define types
+} INSTRUCTION_TYPE; // ressources
+
+enum {
+    NOT_STARTED, EXECUTING, BLOCKED, COMPLETED
+} INSTRUCTION_STATE;
+
+typedef struct {
+    uint32_t instruct_id; // the id of instruction because process can stop at it if need ressources 
+    int process_it; // the id of the process owner
+
+    float time_remaining; // in nano seconds
+    INSTRUCTION_TYPE type; // type of instruction which is ressource needed
+    INSTRUCTION_STATE state; // state of instruction  KHLINAHA HNA
+    
+} INSTRUCTION_DETAILS;
+
 typedef struct {
     int pid;
     char process_name[20];
@@ -97,6 +115,27 @@ enum {
 } Algorithms;
 
 typedef struct {
+    float cpu_total_temps_usage; // somme temps cpu occup total de tout process 
+    float cpu_temps_unoccuped; // temps total ou cpu n etait pas utilisé
+    int context_switch; // nombre total de changement de processus
+    float total_temps_attente; // somme temps waiting de tout processus
+
+    // when process is terminated
+    float total_turnround; // somme de tout processus (temps termine - temps arrive)
+    int processus_termine_count; // processus terminé
+    float troughtput; // processus terminé / total temps en ms
+
+    PCB* current_processus; // processus en cours d execution
+
+} ORDONNANCEUR_STATISTICS;
+
+
+typedef struct {
+    char
+
+} EXECUTION_QUEUE;
+
+typedef struct {
     Algorithms algorithm;
     PCB* exec_proc; // processus en train de s'executer
     
@@ -104,6 +143,12 @@ typedef struct {
     struct tm start;
     struct tm end;
     int cpu_time_used; // en ms: end - start
+
+    float current_time;
+
+    SIMULATOR* simulator; // pointeur vers simulator
+
+    ORDONNANCEUR_STATISTICS statistics; // pointeur vers les statistics du schedular
 } ORDONNANCEUR;
 
 typedef struct {
@@ -123,19 +168,7 @@ typedef struct {
 } PROCESS_MANAGER;
 
 
-typedef struct {
-    float cpu_total_temps_usage; // somme temps cpu occup total de tout process 
-    float cpu_temps_unoccuped; // temps total ou cpu n etait pas utilisé
-    int context_switch; // nombre total de changement de processus
-    float total_temps_attente; // somme temps waiting de tout processus
 
-    PCB* current_processus; // processus en cours d execution
-
-    // when process is terminated
-    float total_turnround; // somme de tout processus (temps termine - temps arrive)
-    int processus_termine_count; // processus terminé
-    float troughtput; // processus terminé / total temps en ms
-} ORDONNANCEUR_STATISTICS;
 
 typedef struct {
     ORDONNANCEUR* schedular; // pointeur vers lordonnanceur
@@ -143,8 +176,7 @@ typedef struct {
     RESSOURCE_MANAGER* ressource_manager; // pointeur vers ressource
     int simulation_time;
     bool runing;
-
-    ORDONNANCEUR_STATISTICS statistics;
+    
 } SIMULATOR;
 
 /*

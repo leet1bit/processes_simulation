@@ -11,7 +11,7 @@ Table PCB {
   mais on va la stimuler avec un list des char,
   chaque char can either indicate to (use or dont use) ressource
   */
-  instruction list(resources_element) // instruction that dont need ressource should be market as by example "pass"
+  instruction list(instruction) [ref: > instruction.instruction_id] // instruction that dont need ressource should be market as by example "pass"
   compteur_programe int // total instruction counte
   memoire_necessaire int // memoire necessaire en mbit
   
@@ -26,6 +26,28 @@ Table PCB {
   pid_siblings_next int // pointeur vers un next sibling block
   pid_siblings_previous int // pointeur vers previous sibling block
 }
+
+enum instruction_state {
+  not_stated
+  executing
+  blocked
+  completed 
+}
+
+enum instruction_type {
+  io
+}
+
+Table instruction {
+  instruction_id uint32_t // the id of instruction can exceed to millions of instructions
+  process_id int // 
+
+  time_remaining float
+
+  type instruction_type
+  state instruction_state
+}
+
 
 Table process_statistics {
   var_name hex // only here not code
@@ -98,6 +120,15 @@ enum algorithms {
   "sjf" // short jo first
 }
 
+Table execution_queue {
+  id int
+  name char(10)
+
+  current_instruction instruction [ref : > instruction.instruction_id]
+  current_process pointer_pcb [ref : > PCB.var_adress]
+  process_id int [ref : > process_table.pcb_id]
+}
+
 // sh
 Table ordonnanceur { // which is schedular
   var_adress hex // only in mcd
@@ -112,8 +143,8 @@ Table ordonnanceur { // which is schedular
   
   current_time float // en ms
   ready_queue ready_queue
-  current_process PCDpointer [ref : > PCB.var_adress] // pointeur du process en execution
   process_table process_table // list des processus
+
 
   is_runing bool
   is_paused bool
