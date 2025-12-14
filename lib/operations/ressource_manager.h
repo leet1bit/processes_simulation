@@ -1,6 +1,7 @@
 #pragma once
 
 #include "structs/ressource_manager.h"
+#include "structs/ressource.h"
 
 
 

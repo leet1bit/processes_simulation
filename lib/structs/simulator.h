@@ -3,6 +3,8 @@
 #include "structs/process_manager.h"
 #include "structs/schedular.h"
 #include "structs/ressource_manager.h"
+#include "structs/ressource.h"
+
 
 
 typedef struct {

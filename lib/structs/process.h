@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "structs/ressource_manager.h" // for RESSOURCES_ELEMENT
+#include "structs/ressource.h" 
 
 typedef enum {
     READY, BLOCKED, EXECUTION, TERMINATED

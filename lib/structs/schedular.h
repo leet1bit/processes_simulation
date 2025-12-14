@@ -3,6 +3,7 @@
 #include "structs/process.h" // for pcb
 #include "structs/simulator.h" // for SIMULATOR
 #include "structs/execution_queue.h" // for the exec queue
+#include "structs/ressource.h"
 
 typedef enum {
     RR, SRTF, PPP, FCFS, SJF
@@ -53,7 +54,7 @@ typedef struct {
     bool (*update_process)(PCB* process, float temps_fin, float tournround, float temps_attente); // when updating temps fin mark process terminated
     bool (*ask_sort_rt)(); // ask simulator to tell process manager to sort by remaining time ; pour srtf
     bool (*ask_sort_priority)(); // ask simulator to tell process manager to sort by priority ; pour ppp
-    PCB* (*ask_for_next_ready_element)();
+    PCB* (*ask_for_next_ready_element)(PCB* current_pcb);
 
     // ordonnanceur to execution queue
     EXECUTION_QUEUE_RESPONSE* (*execute_instruction)(INSTRUCTION* instruction); // instruction to execute
