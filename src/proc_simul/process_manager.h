@@ -39,6 +39,12 @@ typedef struct { // circular chaine
     int size; // how many elements
 } BLOCKED_QUEUE;
 
+// get_all_processus & sort function helper
+typedef struct {
+    PCB* first;
+    int size;
+} pcbs_and_size
+
 typedef struct {
     PROCESS_TABLE* process_table; // pointeur vers process table
     int process_count; // n processes
@@ -51,9 +57,16 @@ typedef struct {
     READY_QUEUE* (*create_ready_queue)(int size); // size which is process count field
     BLOCKED_QUEUE* (*create_blocked_queue)(int size); // will initialize by size 0 i think
 
+    // process table related
+    pcbs_and_size* (*get_all_processus)(FILE* buffer); // should count while retrieving return struct that has first PCB* and size we'll get all process append them to a listn then assign pid,after that we ll push them into process list
+    pcbs_and_size* (*sort_by_f_c)(pcbs_and_size* process_list); // process_list created by get_all_processus
+    pcbs_and_size* (*sort_by_r_time)(pcbs_and_size* process_list); // process_list by get_all_processus
+    pcbs_and_size* (*sort_by_priority)(pcbs_and_size* process_list);  // same
+    pcbs_and_size* (*sort_by_burst)(pcbs_and_size* process_list); // same
+    bool (*push_all_to_process_table)(READY_QUEUE* ready_queue, pcbs_and_size* pcb_list);  // list got by the sorting function
 
-    char* (*get_all_processus)(FILE* buffer); // should count while retrieving we'll get all process append them to a listn then assign pid,after that we ll push them into process list
-    bool (*push_all_to_process_table)()
-
+    //pcb related
+    bool (*mark_process_terminate_update_temps_fin)(PCB* pcb);
+    bool (*update_temps_arrive)(PCB* pcb);
 
 } PROCESS_MANAGER;
