@@ -1,4 +1,6 @@
+#pragma once
 
+#include <time.h>
 
 #include "structs/process.h"
 
