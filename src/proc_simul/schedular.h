@@ -58,5 +58,8 @@ typedef struct {
     // ordonnanceur to execution queue
     EXECUTION_QUEUE_RESPONSE* (*execute_instruction)(INSTRUCTION* instruction); // instruction to execute
 
+    // update statistics
+    bool (*update_schedular_statistics) (ORDONNANCEUR_STATISTICS* schedular, float cpu_total_temps_usage, float cpu_temps_unoccupied, int context_switch, float total_temps_attente, float process_termine_count, float throughtput); // must check nullty
+    
 
 } ORDONNANCEUR;
