@@ -11,7 +11,7 @@
 
 // on start
 EXECUTION_QUEUE* op_create_execution_queue() {
-
+    
 }
 
 ORDONNANCEUR_STATISTICS* op_create_statistics() {

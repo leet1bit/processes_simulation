@@ -44,8 +44,8 @@ typedef struct {
 
     // functions 
     // on start
-    EXECUTION_QUEUE* (*create_execution_queue)();
-    ORDONNANCEUR_STATISTICS* (*create_statistics)();
+    EXECUTION_QUEUE* (*create_execution_queue)(void);
+    ORDONNANCEUR_STATISTICS* (*create_statistics)(void);
 
     // ordonnanceur to simulator (using bool for simplicity)
     bool (*need_ressources)(RESSOURCE_ELEMENT* ressource_needed); // return 1 if ressource is available marked unavailable
