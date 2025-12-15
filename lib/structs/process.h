@@ -21,6 +21,7 @@ typedef struct {
     float time_remaining; // in nano seconds
     RESSOURCE_ELEMENT* type; // type of instruction which is ressource needed
     INSTRUCTION_STATE* state; // state of instruction 
+    INSTRUCTION* next;
 } INSTRUCTION;
 
 typedef struct {

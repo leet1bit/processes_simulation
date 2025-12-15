@@ -59,6 +59,9 @@ buffer_return* extract_from_buffer(FILE* csv_buffer) {
 }
 
 
+
+
+
 // process_name,user_id,ppid,priority,[instruction],n_instruction,memoire,burst,
 typedef struct {
     char process_name[20];
@@ -68,7 +71,13 @@ typedef struct {
     int instructions_count;
     int memoire;
     float burst;
+    bool unvalid_process;
 } parser_return;
+
+typedef struct {
+    INSTRUCTION* head;
+    int size;
+} insruction_parser_return;
 
 parser_return* parser(char* line) {
     parser_return parsed_line = {};
@@ -78,26 +87,39 @@ parser_return* parser(char* line) {
     int value_number = 0;
     char value[100];
     for(int i = 0; i < 10000;i++) { // instructions_count
-        if (line[i] != ",") {
+        if (line[i] != ',') {
             value[char_count] = line[i];
             char_count++;
-        } else if (line[i] == ",") {
+        } else if (line[i] == ',') {
             switch (value_number) {
                 case 0:
                     if (sizeof(value) > 20) {
-                        printf("ERROR ON: parser function process line in csv '%s' has exceded 20 caracter in name\n");
+                        printf("ERROR ON: parser function process line in csv '%s' \nhas exceded 20 caracter in process_name\n");
+                        exit(1);
                     }
                     (value > 20) ? 
                     parsed_line->process_name = value;
                     break;    
                 case 1:
+                    if (sizeof(value) > 20) {
+                        printf("ERROR ON: parser function process line in csv '%s' \nhas exceded 20 caracter in user_id\n");
+                        exit(1);
+                    }
                     parsed_line->user_id = value;
                     break;    
                 case 2:
+                    if (value > 5 || value < 1) {
+                        printf("ERROR ON: parser function process line in csv '%s' \npriority out of range(1-5)\n");
+                        exit(1);
+                    }
                     parsed_line->priority = atoi(value); // atoi stand for ascii to integer and located in stdlib; maybe make ours if we still have time
                     break;    
                 case 3:
-                    parsed_line-> 
+                    if (sizeof(value) < 1) {
+                        parsed_line->unvalid_process = 1;
+                    }
+                    insruction_parser_return parsed_instructions = instruction_parser(value);
+
             }
 
             char_count = 0;
@@ -108,7 +130,7 @@ parser_return* parser(char* line) {
                 printf("ERROR ON: parser function (csv file data unvalid)");
                 exit(1);
             }
-        } else if (line[i] == "\n") {
+        } else if (line[i] == '\n') {
             break;
         } else {
             printf("ERROR ON: parser function");
@@ -116,4 +138,14 @@ parser_return* parser(char* line) {
         }
     }
     return parsed_line;
+}
+
+
+typedef struct {
+    INSTRUCTION* head;
+    int size;
+} insruction_parser_return;
+
+insruction_parser_return* instruction_parser(char* value) {
+
 }
