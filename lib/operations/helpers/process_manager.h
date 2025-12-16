@@ -104,84 +104,103 @@ int instruction_list_len = 6;
 
 
 
-buffer_return* extract_from_buffer(FILE* csv_buffer) {
-    
-    int count = 0;
-
-    char line_pcb[70000];
-    while(fgets(line_pcb, sizeof(line_pcb), csv_buffer)) { // dont forget temps creation
-        parser_return* paresed_buffer = parser(line_pcb); // intializing the returned struct after parsing a line
-        PCB* pcb = (PCB*)malloc(sizeof(PCB)); // initializing the pcb
-        PROCESS_STATISTICS* statistics =  (PROCESS_STATISTICS*)malloc(sizeof(PROCESS_STATISTICS)); // allocate statistics for the pcb
-        
-        if (paresed_buffer == NULL) {
-            fprintf(stderr, "ERROR ON: parser function extract_from_buffer failed allcation paresed_buffer");
-            exit(1);
-        }
-
-        if (pcb == NULL) {
-            fprintf(stderr, "ERROR ON: parser function extract_from_buffer failed allcation pcb");
-            exit(1);
-        }
-
-        if (statistics == NULL) {
-            fprintf(stderr, "ERROR ON: parser function extract_from_buffer failed allcation statistics");
-            exit(1);
-        }
-
-        // assong statitics to it's pcb
-        pcb->statistics = statistics;
-
-        // copy the process name
-        if (strlen(paresed_buffer->process_name) > 20) { // if the process name from parsed buffer > 20 (the allowed on pcb struct)
-            fprintf(stderr, "ERROR ON: parser function extract_from_buffer parsed buffer's process name has exceed 20 char %s\n", paresed_buffer->process_name);
-            free_parsed_buffer(paresed_buffer);
-            exit(1);
-        }
-        strncpy(pcb->process_name, paresed_buffer->process_name, sizeof(paresed_buffer->process_name) - 1); // copy just the size of process_name 
-        pcb->process_name[sizeof(pcb->process_name) - 1] = '\0'; // add null terminator
+PCB* extract_from_buffer(FILE* csv_buffer) {
 
 
-        // copy the user_id
-        if (strlen(paresed_buffer->user_id) > 20) { // if the process name from parsed buffer > 20 (the allowed on pcb struct)
-            fprintf(stderr, "ERROR ON: parser function extract_from_buffer parsed buffer's user_id has exceed 20 char %s\n", paresed_buffer->user_id);
-            free_parsed_buffer(paresed_buffer);
-            exit(1);
-        }
+    char* line_pcb = (char*)malloc(2 * sizeof(char));
+    int char_count = 1;
+    char char_got;
 
-        if (parsed_buffer->unvalid_process_csv_check == false) {
+    while((char_got = fgetc(csv_buffer)) != EOF) { // get one char // dont forget temps creation
 
-            strncpy(pcb->user_id, paresed_buffer->user_id, sizeof(paresed_buffer->user_id) - 1); // copy just the size of process_name 
-            pcb->user_id[sizeof(pcb->user_id) - 1] = '\0'; // add null terminator
+        if (char_got == '\n') { // if we didnt reatch the end of line
 
-            // copy the priority
-            pcb->prioritie = paresed_buffer->priority;
-
-            // copy the instruction
-            pcb->instructions_head = paresed_buffer->instructions_head;
-
-            // copu n instructions
-            pcb->programme_compteur = parsed_buffer->instructions_count;
-
-            // copy memoire
-            pcb->memoire_necessaire = parsed_buffer->memoire;
-
-            // to prevent random value i think
-            pcb->current_instruction = NULL;
-
-            // burst
-            pcb->burst_time = parsed_buffer->burst;
-
-            // creation time same type time_t
-            pcb->statistics->temps_creation = parsed_buffer->temps_creation;
-
-            // parsed_buufer dont need to be free bacause has pointers and scope values
             
+            parser_return* paresed_buffer = parser(line_pcb); // intializing the returned struct after parsing a line
+            PCB* pcb = (PCB*)malloc(sizeof(PCB)); // initializing the pcb
+            PROCESS_STATISTICS* statistics =  (PROCESS_STATISTICS*)malloc(sizeof(PROCESS_STATISTICS)); // allocate statistics for the pcb
+            
+            if (paresed_buffer == NULL) {
+                fprintf(stderr, "ERROR ON: parser function extract_from_buffer failed allcation paresed_buffer");
+                exit(1);
+            }
+
+            if (pcb == NULL) {
+                fprintf(stderr, "ERROR ON: parser function extract_from_buffer failed allcation pcb");
+                exit(1);
+            }
+
+            if (statistics == NULL) {
+                fprintf(stderr, "ERROR ON: parser function extract_from_buffer failed allcation statistics");
+                exit(1);
+            }
+
+            // assong statitics to it's pcb
+            pcb->statistics = statistics;
+
+            // copy the process name
+            if (strlen(paresed_buffer->process_name) > 20) { // if the process name from parsed buffer > 20 (the allowed on pcb struct)
+                fprintf(stderr, "ERROR ON: parser function extract_from_buffer parsed buffer's process name has exceed 20 char %s\n", paresed_buffer->process_name);
+                free_parsed_buffer(paresed_buffer);
+                exit(1);
+            }
+            strncpy(pcb->process_name, paresed_buffer->process_name, sizeof(paresed_buffer->process_name) - 1); // copy just the size of process_name 
+            pcb->process_name[sizeof(pcb->process_name) - 1] = '\0'; // add null terminator
+
+
+            // copy the user_id
+            if (strlen(paresed_buffer->user_id) > 20) { // if the process name from parsed buffer > 20 (the allowed on pcb struct)
+                fprintf(stderr, "ERROR ON: parser function extract_from_buffer parsed buffer's user_id has exceed 20 char %s\n", paresed_buffer->user_id);
+                free_parsed_buffer(paresed_buffer);
+                exit(1);
+            }
+
+            if (parsed_buffer->unvalid_process_csv_check == false) {
+
+                strncpy(pcb->user_id, paresed_buffer->user_id, sizeof(paresed_buffer->user_id) - 1); // copy just the size of process_name 
+                pcb->user_id[sizeof(pcb->user_id) - 1] = '\0'; // add null terminator
+
+                // copy the priority
+                pcb->prioritie = paresed_buffer->priority;
+
+                // copy the instruction
+                pcb->instructions_head = paresed_buffer->instructions_head;
+
+                // copu n instructions
+                pcb->programme_compteur = parsed_buffer->instructions_count;
+
+                // copy memoire
+                pcb->memoire_necessaire = parsed_buffer->memoire;
+
+                // to prevent random value i think
+                pcb->current_instruction = NULL;
+
+                // burst
+                pcb->burst_time = parsed_buffer->burst;
+
+                // creation time same type time_t
+                pcb->statistics->temps_creation = parsed_buffer->temps_creation;
+
+                // parsed_buufer dont need to be free bacause has pointers and scope values
+
+                line_pcb = (char*)realloc(line_pcb, 2 * sizeof(char));
+                char_count = 1;
+                memset(line_pcb, 0, 2 * sizeof(char)); // errase data inside
+                line_pcb[1] = '\0';
+                
+            } else {
+                fprintf(stderr, "ERROR ON: parser function extract_from_buffer parsed buffer's csv validity check has returned true on line : %s\n", line_pcb);
+                exit(1);
+            }
+
         } else {
-            fprintf(stderr, "ERROR ON: parser function extract_from_buffer parsed buffer's csv validity check has returned true%s\n", paresed_buffer->process_name);
-            exit(1);
+            char_count++;
+            line_pcb = (char*)realloc(line_pcb, (char_count * sizeof(char))); // will not efeect the data in line_pcb
+            line_pcb[char_count - 1] = char_got; // -1 pour sauter le '\0'
         }
     }
+
+    return pcb;
 }
 
 
@@ -194,7 +213,7 @@ parser_return* parser(char* line) {
     char* value = (char*)malloc(sizeof(char)); // change it to dynamic allocation
     line[strlen(line)] = '\0';
     int line_length = strlen(line); // for time consuming
-    if (line[line_length] != '\n' && line[line_length - 1] != '\0' && line[line_length - 1] != '\n') { // trust no one
+    if (line[line_length] != '\n' && line[line_length - 1] != '\0' && line[line_length - 1] != '\n') { 
         fprintf(stderr, "ERROR ON: parser function parser line gived is unvalid (probably will lead to loop infinite)\n", line);
         exit(1);
     }

@@ -20,9 +20,13 @@
 // #include "../process.h"
 #include 
 #include <assert.h>
+#include <stdio.h>
+#include <stdlin.h>
+
+#include "../process_manager.h"
 
 void main() {
-
+    
 
 
 }
