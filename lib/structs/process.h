@@ -34,7 +34,7 @@ typedef struct PROCESS_STATISTICS{
     time_t temps_fin;
     
     float temps_attente; // gap entre temps arrive & temps exec // need to be init 0
-    int tournround; // temps terminer - temps arrive
+    float tournround; // temps terminer - temps arrive
 } PROCESS_STATISTICS;
 
 typedef struct PCB {
@@ -62,13 +62,12 @@ typedef struct PCB {
     struct PCB* pid_sibling_previous; // pointeur vers previous sib
 
     float (*update_temps_attente)(struct PCB* self);
-    float (*update_turnround) (struct PCB* self);
     bool (*mark_instruction_terminated) (struct PCB* self, INSTRUCTION* instruction);
     bool (*update_temps_arrive) (struct PCB* self, struct tm temps_arrive);
     bool (*update_temps_creation) (struct PCB* self, struct tm temps_creation);
     bool (*update_temps_fin) (struct PCB* self, struct tm temps_fin);
-    struct PCB* (*get_next_pcb)(struct PCB* self);
-    struct PCB* (*get_previous_pcb)(struct PCB* self);
+    // struct PCB* (*get_next_pcb)(struct PCB* self);
+    // struct PCB* (*get_previous_pcb)(struct PCB* self);
     struct PCB* (*define_next)(struct PCB* self, struct PCB* next);
     struct PCB* (*define_previous)(struct PCB* self, struct PCB* previous);
 } PCB;

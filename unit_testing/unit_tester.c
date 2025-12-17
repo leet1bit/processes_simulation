@@ -45,11 +45,12 @@ void print_pcb(PCB* pcb) {
         }
         TEMP = TEMP->next;
     }
+    free(TEMP);
     // kob lia hloben a wliidi raho khdem
     
 }
 
-void testing_the_csv_parsing() {
+PCB* testing_the_csv_parsing() {
 
     // heap allocated buffer
     size_t size = 10 * 1024 * 1024; // 10mbytes
@@ -70,12 +71,50 @@ void testing_the_csv_parsing() {
 
     PCB* pcb_head = extract_from_buffer(csv_buffer);
 
-    while (pcb_head != NULL) {
-        print_pcb(pcb_head);
-        pcb_head = pcb_head->pid_sibling_next;
-    }
+    // while (pcb_head != NULL) {
+    //     print_pcb(pcb_head);
+    //     pcb_head = pcb_head->pid_sibling_next;
+    // }
+
+    return pcb_head;
 
 }
+
+// testing the process table creation and ready queue sorting fcfs
+void testing_process_table_creation_and_ready_queue() {
+
+    PCB* head = testing_the_csv_parsing();
+
+    if (head == NULL) {
+        fprintf(stderr, "ERROR ON: error while allocating the head before reading csv\n");
+        exit(1);
+    }
+
+    PCB* ready_queue = op_create_ready_queue(head);
+
+    if (ready_queue == NULL) {
+        fprintf(stderr, "ERROR ON: error while allocating the ready_queue before reading csv\n");
+        exit(1);
+    }
+
+    PCB* sorted_ready_queue = op_sort_ready_by_fc(ready_queue);
+
+    if (sorted_ready_queue == NULL) {
+        fprintf(stderr, "ERROR ON: error while allocating the sorted_ready_queue before reading csv\n");
+        exit(1);
+    }
+
+    while (ready_queue != NULL) {
+        print_pcb(ready_queue);
+        ready_queue = ready_queue->pid_sibling_next;
+    }
+
+    while (sorted_ready_queue != NULL) {
+        print_pcb(sorted_ready_queue);
+        sorted_ready_queue = sorted_ready_queue->pid_sibling_next;
+    }
+    // checked all good
+}   
 
 /*
 gcc -Wall -Wextra -std=c11 \
@@ -83,13 +122,13 @@ gcc -Wall -Wextra -std=c11 \
     -I./lib/operations \
     -I./lib/operations/helpers \
     -I./lib/structs \
-    "unit testing/unit_tester.c" \
+    "unit_testing/unit_tester.c" \
     -o unit_test
 
 */
 
 int main() {
-    
+
     testing_the_csv_parsing();
 
     return 0;
