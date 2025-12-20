@@ -7,7 +7,7 @@
 #include "structs/process.h"
 
 
-bool op_update_temps_creation(PCB* self) {
+bool op_update_temps_creation(PCB* self, struct tm temps_creation) {
     if (self == NULL) {
         return NULL;
     }
@@ -86,7 +86,7 @@ PCB* op_pcb_define_previous(PCB* self, PCB* previous) {
     return self;
 }
 
-PCB* op_mark_instruction_terminated(PCB* self, INSTRUCTION* instruction) {
+bool op_mark_instruction_terminated(PCB* self, INSTRUCTION* instruction) {
     if (self == NULL || instruction == NULL)
         return NULL;
 

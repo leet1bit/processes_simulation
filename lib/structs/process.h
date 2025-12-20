@@ -61,7 +61,7 @@ typedef struct PCB {
     struct PCB* pid_sibling_next; // pointeur vers next sib
     struct PCB* pid_sibling_previous; // pointeur vers previous sib
 
-    float (*update_temps_attente)(struct PCB* self);
+    bool (*update_temps_attente)(struct PCB* self, float temps_attente);
     bool (*mark_instruction_terminated) (struct PCB* self, INSTRUCTION* instruction);
     bool (*update_temps_arrive) (struct PCB* self, struct tm temps_arrive);
     bool (*update_temps_creation) (struct PCB* self, struct tm temps_creation);
