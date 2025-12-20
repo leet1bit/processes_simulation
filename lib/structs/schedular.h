@@ -5,6 +5,8 @@
 #include "structs/execution_queue.h" // for the exec queue
 #include "structs/ressource.h"
 
+#include <unistd.h> // for time wait in second
+
 typedef enum {
     RR, SRTF, PPP, FCFS, SJF
 } Algorithms;
@@ -23,12 +25,12 @@ typedef struct {
     PCB* current_processus; // processus en cours d execution
 } ORDONNANCEUR_STATISTICS;
 
-
 typedef struct {
+
     Algorithms algorithm;
     PCB* exec_proc; // processus en train de s'executer
     int current_pid; // pid du processus en cours d'exec
-    
+
     float quantum; // quantum de time pour RR
     struct tm start;
     struct tm end;
@@ -41,13 +43,13 @@ typedef struct {
 
     ORDONNANCEUR_STATISTICS* statistics; // pointeur vers les statistics du schedular
 
-
-    // functions 
+    // functions
     // on start
     EXECUTION_QUEUE* (*create_execution_queue)(void);
     ORDONNANCEUR_STATISTICS* (*create_statistics)(void);
 
     // ordonnanceur to simulator (using bool for simplicity)
+    EXECUTION_RESULT* (*signal_execute_instruction) (PCB* pcb, float quantum); // tell the execution queue to execute an instruction
     bool (*need_ressources)(RESSOURCE_ELEMENT* ressource_needed); // return 1 if ressource is available marked unavailable
     bool (*ressource_is_free)(RESSOURCE_ELEMENT* ressource); // return 1 if ressource succesfully free (for error handling)
     bool (*update_cpu_time_used)(PCB* process, float inc); // shoudld declancher calcul remaining time inc the value to add to time, because can only increasing not decreasing
@@ -58,6 +60,7 @@ typedef struct {
 
     // update statistics
     bool (*update_schedular_statistics) (ORDONNANCEUR_STATISTICS* schedular, float cpu_total_temps_usage, float cpu_temps_unoccupied, int context_switch, float total_temps_attente, float process_termine_count, float throughtput); // must check nullty
-    
 
 } ORDONNANCEUR;
+
+// like n9dr n3ti l ordonnanceur process i3tih l execution_queue
