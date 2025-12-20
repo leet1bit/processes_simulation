@@ -4,8 +4,8 @@
 #include <structs/schedular.h>
 
 
-bool op_check_instruction_disponibility(ORDONNANCEUR* schedular, INSTRUCTION* instruction) {
+bool op_check_ressource_disponibility(ORDONNANCEUR* schedular, RESSOURCE ressource) {
 
-    return schedular->check_instruction_disponibility(instruction);
+    return schedular->check_ressource_disponibility(ressource);
 
 }

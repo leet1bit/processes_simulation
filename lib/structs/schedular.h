@@ -64,7 +64,7 @@ typedef struct {
     bool (*update_schedular_statistics) (ORDONNANCEUR_STATISTICS* schedular, float cpu_total_temps_usage, float cpu_temps_unoccupied, int context_switch, float total_temps_attente, float process_termine_count, float throughtput); // must check nullty
 
     // check instruction disponibility
-    bool (*check_instruction_disponibility) (INSTRUCTION* instruction);
+    bool (*check_ressource_disponibility) (RESSOURCE ressource);
 
 } ORDONNANCEUR;
 

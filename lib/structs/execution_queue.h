@@ -35,6 +35,6 @@ typedef struct EXECUTION_QUEUE {
     //function
     INSTRUCTION* (*next_instruction) (PCB* pcb); // retrieve the next instruction to pass it to execute instruction
     EXECUTION_RESULT* (*execute_instruction) (INSTRUCTION* instruction, float quantum); // execute it and return the result
-    bool (*check_instruction_disponibility) (INSTRUCTION* instruction); // check if instruction is disponible
+    bool (*check_ressource_disponibility) (RESSOURCE ressource); // check if instruction is disponible
 
 } EXECUTION_QUEUE;
