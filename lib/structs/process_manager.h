@@ -32,7 +32,7 @@ typedef struct PROCESS_MANAGER {
     struct PCB* (*push_all_to_process_table)(struct PCB* process_table_head, PCB* pcbs_head);  // list got by the sorting function
 
     //pcb related
-    PCB* (*update_process)(PCB* pcb, struct tm temps_arrive, struct tm temps_fin, float cpu_temps_used, float temps_attente, int cpu_usage); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
+    PCB* (*update_process)(PCB* pcb, time_t *temps_fin, float *cpu_temps_used, float *temps_attente, int *cpu_usagee); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
 
     //ready queue related
     struct PCB* (*push_to_ready_queue)(struct PCB* ready_queue_head, struct PCB* pcb); // LIST CREATED NEED TO BEE FREE AFRTER ASSIGNING IT TO the proces_manager ready queue
@@ -46,5 +46,8 @@ typedef struct PROCESS_MANAGER {
     
     // assign function to the pcb
     PCB* (*assign_functions_to_pcb)(PCB* pcb);
+
+    PCB* (*get_next_ready_element) (PCB* current_pcb);
+
     
 } PROCESS_MANAGER;

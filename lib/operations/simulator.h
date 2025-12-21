@@ -69,8 +69,26 @@ bool op_simul_check_instruction_disponibility(RESSOURCE_MANAGER* ressource_manag
     return result;
 }
 
-bool signal_ressource_free(RESSOURCE_MANAGER* ressource_manager, RESSOURCE ressource) {
+bool op_signal_ressource_free(RESSOURCE_MANAGER* ressource_manager, RESSOURCE ressource) {
     bool response = ressource_manager->mark_ressource_available(ressource);
+
+    return response;
+}
+
+PCB* op_ask_for_next_ready_element(SIMULATOR* simulator, PCB* process) {
+    bool response = simulator->process_manager->get_next_ready_element(process);
+
+    return response;
+}
+
+bool op_ask_sort_rt(SIMULATOR* simulator) {
+    bool response = simulator->process_manager->sort_by_rt(simulator->process_manager);
+
+    return response;
+}
+
+bool op_ask_sort_priority(SIMULATOR* simulator) {
+    bool response = simulator->process_manager->sort_by_priority(simulator->process_manager);
 
     return response;
 }

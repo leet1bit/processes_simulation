@@ -58,7 +58,6 @@ typedef struct {
 
     // update statistics
     bool (*update_schedular_statistics) (ORDONNANCEUR_STATISTICS* schedular, float cpu_total_temps_usage, float cpu_temps_unoccupied, int context_switch, float total_temps_attente, float process_termine_count, float throughtput); // must check nullty
-    
 
 } ORDONNANCEUR;
 
@@ -98,5 +97,10 @@ typedef struct {
     bool (*check_ressource_disponibility) (RESSOURCE_MANAGER* ressource_manager, RESSOURCE ressource);
 
     bool (*signal_ressource_free) (RESSOURCE_MANAGER* ressource_manager, RESSOURCE ressource);
+
+    PCB* (*ask_for_next_ready_element) (SIMULATOR* simulator, PCB* current_pcb);
+
+    bool (*ask_sort_rt)(SIMULATOR* self); // ask simulator to tell process manager to sort by remaining time ; pour srtf
+    bool (*ask_sort_priority)(SIMULATOR* self); // ask simulator to tell process manager to sort by priority ; pour ppp
 
 } SIMULATOR;

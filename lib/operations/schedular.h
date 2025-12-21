@@ -24,13 +24,15 @@ ORDONNANCEUR_STATISTICS* op_create_statistics() {
 }
 
 // ordonnanceur to simulator
-bool op_need_ressources(EXECUTION_QUEUE* execution_queue, RESSOURCE_ELEMENT* ressource_needed) {
-    
+bool op_need_ressources(ORDONNANCEUR* self, RESSOURCE_ELEMENT* ressource_needed) {
+    bool response = self->need_ressources(ressource_needed);
 
+    return response;
 }
 
 bool op_ressource_is_free(SIMULATOR* simulator, RESSOURCE ressource) {
     bool response = simulator->signal_ressource_free(simulator->ressource_manager, ressource);
+
     return response;
 }
 
@@ -42,17 +44,24 @@ bool op_update_process(PCB* process, float temps_fin, float tournround, float te
 
 }
 
-bool op_ask_sort_rt() {
+bool op_ask_sort_rt(ORDONNANCEUR* schedular) {
+    bool response = schedular->ask_sort_rt(schedular);
 
+    return response;
 }
 
-bool op_ask_sort_priority() {
+bool op_ask_sort_priority(SIMULATOR* simulator) {
 
+    bool response = simulator->ask_sort_priority(simulator);
+
+    return response;
 }
 
-PCB* op_ask_for_next_ready_element(PCB* current_pcb) {
+PCB* op_ask_for_next_ready_element(SIMULATOR* simulator, PCB* current_pcb) {
 
-    
+    PCB* response = simulator->ask_for_next_ready_element(simulator, current_pcb); 
+
+    return response;
 }
 
 // ordonnanceur to execution queue
@@ -81,8 +90,27 @@ EXECUT_RESPONSE op_signal_execute_instruction(ORDONNANCEUR* self, EXECUTION_QUEU
 }
 
 // update statistics
-bool op_update_schedular_statistics(ORDONNANCEUR_STATISTICS* schedular, float cpu_total_temps_usage, float cpu_temps_unoccupied, int context_switch, float total_temps_attente, float process_termine_count, float throughtput) { // must check nullty
+bool op_update_schedular_statistics(ORDONNANCEUR* schedular, float* cpu_total_temps_usage, float* cpu_temps_unoccupied, int* context_switch, float* total_temps_attente, float* process_termine_count, float* throughtput) { // must check nullty
+    
+    if (cpu_total_temps_usage != NULL)
+        schedular->statistics->cpu_total_temps_usage = *cpu_total_temps_usage;
+    
+    if (cpu_temps_unoccupied != NULL)
+        schedular->statistics->cpu_temps_unoccuped = *cpu_temps_unoccupied;
+    
+    if (context_switch != NULL)
+        schedular->statistics->context_switch = *context_switch;
 
+    if (total_temps_attente != NULL)
+        schedular->statistics->total_temps_attente = *total_temps_attente;
+    
+    if (total_temps_attente != NULL)
+        schedular->statistics->processus_termine_count = *process_termine_count;
+    
+    if (throughtput != NULL)
+        schedular->statistics->troughtput = *throughtput;
+
+    return true;
 }
 
 bool op_check_ressource_disponibility(SIMULATOR* simulator, RESSOURCE ressource) {

@@ -143,7 +143,10 @@ PCB* op_create_ready_queue(bool circular, PCB* pcb) {  // we dont pass the algo 
     }
 }
 
-PCB* op_sort_ready_by_fc(PCB* ready_queue_head, bool circular) {
+PCB* op_sort_ready_by_fc(PROCESS_MANAGER* process_manager, bool circular) {
+
+    PCB* ready_queue_head = process_manager->ready_queue_head;
+
     if (ready_queue_head == NULL) {
         fprintf(stderr, "ERROR ON: op_sort_ready_by_fc , ready_queue_head is NULL\n");
         exit(1);
@@ -177,7 +180,10 @@ PCB* op_sort_ready_by_fc(PCB* ready_queue_head, bool circular) {
     return sorted_head;
 }
 
-PCB* op_sort_ready_by_rt(PCB* ready_queue_head) { // copy past and change condition and error output
+PCB* op_sort_ready_by_rt(PROCESS_MANAGER* process_manager) { // copy past and change condition and error output
+
+    PCB* ready_queue_head = process_manager->ready_queue_head;
+
     if (ready_queue_head == NULL) {
         fprintf(stderr, "ERROR ON: op_sort_ready_by_rt , ready_queue_head is NULL\n");
         exit(1);
@@ -211,7 +217,10 @@ PCB* op_sort_ready_by_rt(PCB* ready_queue_head) { // copy past and change condit
     return sorted_head;
 }
 
-PCB* op_sort_ready_by_priority(PCB* ready_queue_head) {
+PCB* op_sort_ready_by_priority(PROCESS_MANAGER* process_manager) {
+
+    PCB* ready_queue_head = process_manager->ready_queue_head;
+
     if (ready_queue_head == NULL) {
         fprintf(stderr, "ERROR ON: op_sort_ready_by_priority , ready_queue_head is NULL\n");
         exit(1);
@@ -245,7 +254,10 @@ PCB* op_sort_ready_by_priority(PCB* ready_queue_head) {
     return sorted_head;
 }
 
-PCB* op_sort_ready_by_burst(PCB* ready_queue_head) {
+PCB* op_sort_ready_by_burst(PROCESS_MANAGER* process_manager) {
+
+    PCB* ready_queue_head = process_manager->ready_queue_head;
+
     if (ready_queue_head == NULL) {
         fprintf(stderr, "ERROR ON: op_sort_ready_by_priority , ready_queue_head is NULL\n");
         exit(1);
@@ -288,7 +300,7 @@ PCB* op_create_blocked_queue(PCB* blocked_queue_head) {
 
 //pcb related
 // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
-PCB* op_update_process(PCB* pcb, time_t temps_fin, float cpu_temps_used, float temps_attente, int cpu_usage) {
+PCB* op_update_process(PCB* pcb, time_t *temps_fin, float *cpu_temps_used, float *temps_attente, int *cpu_usage) {
     if (pcb == NULL) {
         fprintf(stderr, "ERROR ON: op_update_process , pcb is NULL\n");
         return NULL;
@@ -296,21 +308,21 @@ PCB* op_update_process(PCB* pcb, time_t temps_fin, float cpu_temps_used, float t
 
     // updating the given fields
     if (temps_fin) { // updating temp fin = update tournround
-        pcb->statistics->temps_fin = temps_fin;
-        pcb->statistics->tournround = temps_fin - pcb->statistics->temps_arrive;
+        pcb->statistics->temps_fin = *temps_fin;
+        pcb->statistics->tournround = *temps_fin - pcb->statistics->temps_arrive;
     }
     
     if (cpu_temps_used) {
-        pcb->cpu_time_used += cpu_temps_used; // because initialized to 0
+        pcb->cpu_time_used += *cpu_temps_used; // because initialized to 0
     }
     
     if (temps_attente) {
-        pcb->statistics->temps_attente += temps_attente; // because init to 0
+        pcb->statistics->temps_attente += *temps_attente; // because init to 0
     }
     
-    if (cpu_usage) {
-        pcb->cpu_usage += cpu_usage; // because also init to 0
-    }
+    // if (cpu_usage) {
+    //     pcb->cpu_usage += cpu_usage; // because also init to 0
+    // }
 
     return pcb;
 }
@@ -455,6 +467,17 @@ PCB* op_get_blocked_queue_element(PCB* blocked_queue_head, PCB* pcb) {
 
     return NULL;
 }
+
+PCB* op_get_next_ready_element(PCB* current_pcb) {
+ 
+    if (current_pcb == NULL) {
+        return NULL;
+    }
+
+    PCB* next = current_pcb->pid_sibling_next;
+}
+
+
 
 PCB* op_assign_functions_to_pcb(PCB* pcb) {
     pcb->update_temps_attente = op_update_temps_attente;

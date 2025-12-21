@@ -64,8 +64,8 @@ typedef struct ORDONNANCEUR {
     bool (*ressource_is_free)(SIMULATOR* simulator, RESSOURCE ressource); // return 1 if ressource succesfully free (for error handling)
     bool (*update_cpu_time_used)(PCB* process, float inc); // shoudld declancher calcul remaining time inc the value to add to time, because can only increasing not decreasing
     bool (*update_process)(PCB* process, float temps_fin, float tournround, float temps_attente); // when updating temps fin mark process terminated
-    bool (*ask_sort_rt)(); // ask simulator to tell process manager to sort by remaining time ; pour srtf
-    bool (*ask_sort_priority)(); // ask simulator to tell process manager to sort by priority ; pour ppp
+    bool (*ask_sort_rt)(SIMULATOR* simulator); // ask simulator to tell process manager to sort by remaining time ; pour srtf
+    bool (*ask_sort_priority)(SIMULATOR* simulator); // ask simulator to tell process manager to sort by priority ; pour ppp
     PCB* (*ask_for_next_ready_element)(PCB* current_pcb);
 
     // update statistics

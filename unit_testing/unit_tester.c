@@ -7,6 +7,12 @@
 #include "operations/ressource_manager.h"
 #include "structs/process.h"
 
+#include "structs/simulator.h"
+#include "structs/ressource_manager.h"
+#include "structs/ressource.h"
+#include "structs/process_manager.h"
+#include "structs/ressource.h"
+
 void print_pcb(PCB* pcb) {
     printf("process_id: %d\n", pcb->pid);
     printf("process_name: %s\n", pcb->process_name);
@@ -136,6 +142,27 @@ RESSOURCE_ELEMENT* testing_ressource_creator() {
     }
 
     return head;
+}
+
+// test execute process
+void testing_execute_process() {
+
+    PCB* head = testing_the_csv_parsing();
+
+    SIMULATOR* simulator = (SIMULATOR*)malloc(sizeof(SIMULATOR));
+
+    simulator->ressource_manager = (RESSOURCE_MANAGER*)malloc(sizeof(RESSOURCE_MANAGER));
+
+    simulator->process_manager = (PROCESS_MANAGER*)malloc(sizeof(PROCESS_MANAGER));
+
+    simulator->schedular = (ORDONNANCEUR*)malloc(sizeof(ORDONNANCEUR));
+
+    if (simulator == NULL || simulator->process_manager == NULL || simulator->schedular == NULL || simulator->ressource_manager == NULL) {
+        fprintf(stderr, "ERROR ON: error while allocating the simulator\n");
+        exit(1);
+    }
+
+
 }
 
 
