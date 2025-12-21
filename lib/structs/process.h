@@ -52,7 +52,7 @@ typedef struct PCB {
     float burst_time; // total temps necessaire en ms pour l'exec . burst = compte_temps + temps_restant
     float cpu_time_used; // temps cpu consomme en ms init 0
     float remaining_time; // temps restant : = burst - cpu_time_used
-    int cpu_usage; // initialized as 0
+    // int cpu_usage; // initialized as 0
 
     PROCESS_STATISTICS* statistics; 
 

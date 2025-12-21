@@ -95,7 +95,7 @@ typedef struct {
     bool (*update_cpu_time_used)(PCB* process, float inc);
 
     // check instruction disponibility
-    bool (*check_ressource_disponibility) (RESSOURCE ressource);
+    bool (*check_ressource_disponibility) (RESSOURCE_MANAGER* ressource_manager, RESSOURCE ressource);
 
     bool (*signal_ressource_free) (RESSOURCE_MANAGER* ressource_manager, RESSOURCE ressource);
 

@@ -51,9 +51,8 @@ bool op_ask_sort_priority() {
 }
 
 PCB* op_ask_for_next_ready_element(PCB* current_pcb) {
+
     
-
-
 }
 
 // ordonnanceur to execution queue
@@ -88,7 +87,59 @@ bool op_update_schedular_statistics(ORDONNANCEUR_STATISTICS* schedular, float cp
 
 bool op_check_ressource_disponibility(SIMULATOR* simulator, RESSOURCE ressource) {
 
-    bool result = simulator->check_ressource_disponibility(ressource);
+    bool result = simulator->check_ressource_disponibility(simulator->ressource_manager, ressource);
 
     return result;
+}
+
+process_return op_execute_process(ORDONNANCEUR* self, PCB* process, float quantum) {
+
+    self->exec_proc = process; // define the process en cours d'execution
+
+    process->etat = EXECUTION; // change the state
+
+    if ( process->current_instruction == NULL) // if it's the first time executing the process ------ need to be init as 0
+        process->current_instruction = process->instructions_head; // define the current instruction
+
+    if (process->etat == READY)
+        process->current_instruction = process->instructions_head;
+
+    process_return response;
+
+    while (process->current_instruction != NULL) {
+
+        EXECUT_RESPONSE exec_instruction = self->signal_execute_instruction(self, self->in_execution_queue, process->current_instruction); // can be changed to take 5ms
+        
+        if (exec_instruction == EXEC_SUCCESS) { // if instruction succedded
+
+            if (process->current_instruction->next == NULL) {
+
+                process->etat = TERMINATED;
+
+                response = FINISHED;
+
+                break;
+            }
+
+            process->current_instruction = process->current_instruction->next;
+
+        } else if (exec_instruction == NEED_RESSOURCE) { // if it need's ressources
+
+            process->etat = BLOCKED;
+
+            response = RESSOURCE_NEEDED;
+
+            break;
+
+        } else {
+
+            response = ERROR;
+
+            break;
+
+        }
+
+    }
+
+    return response;
 }

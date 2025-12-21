@@ -53,14 +53,14 @@ bool op_cpu_time_used(PCB* self, float cpu_temps_used) { // updating cpu_temps_u
     return true;
 }
 
-bool op_update_cpu_usage(PCB* self, int cpu_usage) {
-    if (self == NULL || cpu_usage == NULL) {
-        printf("ERROR ON: op_update_cpu_usage (NULL value)\n");
-        return false;
-    }
-    self->cpu_usage += cpu_usage;
-    return true;
-}   
+// bool op_update_cpu_usage(PCB* self, int cpu_usage) {
+//     if (self == NULL || cpu_usage == NULL) {
+//         printf("ERROR ON: op_update_cpu_usage (NULL value)\n");
+//         return false;
+//     }
+//     self->cpu_usage += cpu_usage;
+//     return true;
+// }   
 
 bool op_update_temps_attente(PCB* self, float temps_attente) {
     if (self == NULL || temps_attente == 0) {

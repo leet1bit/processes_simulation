@@ -14,12 +14,12 @@ EXECUT_RESPONSE op_execute_instruction(INSTRUCTION* instruction) {
 
     instruction->state = COMPLETED;
 
-    struct timespec ts;
+    // struct timespec ts;
 
-    ts.tv_sec = 0;
-    ts.tv_nsec = 1; // sleep one nano sec
+    // ts.tv_sec = 0;
+    // ts.tv_nsec = 5 * 1000 * 1000; // 5 milliesecondss
 
-    nanosleep(&ts, NULL);
+    // nanosleep(&ts, NULL);
 
     return EXEC_SUCCESS;
 }

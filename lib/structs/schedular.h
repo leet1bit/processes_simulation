@@ -11,6 +11,15 @@ typedef enum {
     RR, SRTF, PPP, FCFS, SJF
 } Algorithms;
 
+typedef enum {
+
+    FINISHED,      // Instruction executed successfully
+    RESSOURCE_NEEDED,
+    QUANTUM_EXPIRED,
+    ERROR         // General error
+
+}  process_return;
+
 typedef struct {
 
     float cpu_total_temps_usage; // somme temps cpu occup total de tout process
@@ -22,8 +31,6 @@ typedef struct {
     float total_turnround; // somme de tout processus (temps termine - temps arrive)
     int processus_termine_count; // processus terminé
     float troughtput; // processus terminé / total temps en ms
-
-    PCB* current_processus; // processus en cours d execution
     
 } ORDONNANCEUR_STATISTICS;
 
@@ -60,7 +67,6 @@ typedef struct ORDONNANCEUR {
     bool (*ask_sort_rt)(); // ask simulator to tell process manager to sort by remaining time ; pour srtf
     bool (*ask_sort_priority)(); // ask simulator to tell process manager to sort by priority ; pour ppp
     PCB* (*ask_for_next_ready_element)(PCB* current_pcb);
-
 
     // update statistics
     bool (*update_schedular_statistics) (ORDONNANCEUR_STATISTICS* schedular, float cpu_total_temps_usage, float cpu_temps_unoccupied, int context_switch, float total_temps_attente, float process_termine_count, float throughtput); // must check nullty
