@@ -74,6 +74,9 @@ typedef struct ORDONNANCEUR {
     // check instruction disponibility
     bool (*check_ressource_disponibility) (RESSOURCE ressource);
 
+    // execute process
+    process_return (*execute_process)(ORDONNANCEUR* self, PCB* process);
+
 } ORDONNANCEUR;
 
 // like n9dr n3ti l ordonnanceur process i3tih l execution_queue

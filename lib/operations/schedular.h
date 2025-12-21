@@ -92,7 +92,7 @@ bool op_check_ressource_disponibility(SIMULATOR* simulator, RESSOURCE ressource)
     return result;
 }
 
-process_return op_execute_process(ORDONNANCEUR* self, PCB* process, float quantum) {
+process_return op_execute_process(ORDONNANCEUR* self, PCB* process) {
 
     self->exec_proc = process; // define the process en cours d'execution
 
@@ -136,9 +136,7 @@ process_return op_execute_process(ORDONNANCEUR* self, PCB* process, float quantu
             response = ERROR;
 
             break;
-
         }
-
     }
 
     return response;
