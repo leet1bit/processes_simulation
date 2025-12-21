@@ -6,7 +6,7 @@
 typedef enum {
 
     EXEC_SUCCESS,      // Instruction executed successfully
-    NEED_RESSOURCE,
+    NEED_RESSOURCE,    // ressource needed
     EXEC_ERROR         // General error
 
 } EXECUT_RESPONSE;

@@ -29,22 +29,54 @@ FILE* op_load_processus(SIMULATOR* self) {
 }
 
 //initialize managers
-PROCESS_MANAGER* op_start_process_manager(FILE* buffer) {
+PROCESS_MANAGER* op_start_process_manager(SIMULATOR* self, FILE* buffer) {
 
+    PROCESS_MANAGER* process_manager = (PROCESS_MANAGER*)malloc(sizeof(PROCESS_MANAGER));
+    
+    if (process_manager == NULL) {
+        fprintf(stderr, "ERROR ON: op_start_ressource_manager , process_manager allocation returned NULL\n");
+        exit(1);
+    }
+
+    self->process_manager = process_manager;
+
+    return process_manager;
 }
 
-RESSOURCE_MANAGER* op_start_ressource_manager() {
+RESSOURCE_MANAGER* op_start_ressource_manager(SIMULATOR* self) {
+    
+    RESSOURCE_MANAGER* ressource_manager = (RESSOURCE_MANAGER*)malloc(sizeof(RESSOURCE_MANAGER));
 
+    if (ressource_manager == NULL) {
+        fprintf(stderr, "ERROR ON: op_start_ressource_manager , ressource_manager allocation returned NULL\n");
+        exit(1);
+    }
+
+    self->ressource_manager = ressource_manager;
+
+    return ressource_manager;
 }
 
 ORDONNANCEUR* op_start_schedular(Algorithms algorithm, int quantum, SIMULATOR* self) {
     
+    ORDONNANCEUR* schedular = (ORDONNANCEUR*)malloc(sizeof(ORDONNANCEUR));
+
+    if (schedular == NULL) {
+        fprintf(stderr, "ERROR ON: op_start_schedular , schedular allocation returned NULL\n");
+        exit(1);
+    }
+
+    self->schedular = schedular;
+
+    return schedular;
 }
 
 
 // process_manager & schedular related function
-bool op_check_ressource_disponibility(RESSOURCE_ELEMENT* ressource_needed) {
+bool op_check_ressource_disponibility(SIMULATOR* self, RESSOURCE_ELEMENT* ressource_needed) {
+    bool response = self->ressource_manager->check_if_ressource_available(ressource_needed);
 
+    return response;
 }
 
 bool op_signal_ressource_is_free(RESSOURCE_MANAGER* ressource_manager, RESSOURCE ressource) {
