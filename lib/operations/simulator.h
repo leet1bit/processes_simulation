@@ -33,24 +33,24 @@ SIMULATOR* op_start(SIMULATOR* self, char* path) {
     self->ressource_manager = ressource_manager;
     self->schedular = schedular;
 
-    self->simulator = self;
+    // self->simulator = self;
 
     self->runing = true;
 
     return self;
 }
 
-void op_stop(SIMULATOR* self, char* path) {
+// void op_stop(SIMULATOR* self, char* path) {
 
-}
+// }
 
-void op_load_simulator(SIMULATOR* self, char* path) {
+// void op_load_simulator(SIMULATOR* self, char* path) {
 
-}
+// }
 
-FILE* op_load_processus(SIMULATOR* self) {
+// FILE* op_load_processus(SIMULATOR* self) {
 
-}
+// }
 
 //initialize managers
 PROCESS_MANAGER* op_start_process_manager(SIMULATOR* self, FILE* buffer) {
@@ -111,9 +111,11 @@ bool op_signal_ressource_is_free(RESSOURCE_MANAGER* ressource_manager, RESSOURCE
 }
 
 // process_manager & schedular related functions
-bool op_update_cpu_time_used(PCB* process, float inc) {
+// bool op_update_cpu_time_used(PROCESS_MANAGER* process_manager, float inc) {
+//     bool response = process_manager->update_cpu_time_used(inc);
 
-}
+//     return response;
+// }   
 
 
 bool op_sched_check_instruction_disponibility(INSTRUCTION* instruction) {
@@ -148,4 +150,8 @@ bool op_ask_sort_priority(SIMULATOR* simulator) {
     bool response = simulator->process_manager->sort_by_priority(simulator->process_manager);
 
     return response;
+}
+
+WORK_RETURN op_work(PROCESS_MANAGER* process_manager, ORDONNANCEUR* schedular, SIMULATOR* simulator, EXECUTION_QUEUE execution_queue) {
+
 }

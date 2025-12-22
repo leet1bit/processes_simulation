@@ -9,6 +9,10 @@ typedef enum {
     RR, SRTF, PPP, FCFS, SJF
 } Algorithms;
 
+typedef enum {
+    WORK_DONE, ERROR
+} WORK_RETURN;
+
 typedef struct {
     float cpu_total_temps_usage; // somme temps cpu occup total de tout process 
     float cpu_temps_unoccuped; // temps total ou cpu n etait pas utilisé
@@ -102,5 +106,8 @@ typedef struct {
 
     bool (*ask_sort_rt)(SIMULATOR* self); // ask simulator to tell process manager to sort by remaining time ; pour srtf
     bool (*ask_sort_priority)(SIMULATOR* self); // ask simulator to tell process manager to sort by priority ; pour ppp
+
+    WORK_RETURN (*work) (PROCESS_MANAGER* process_manager, ORDONNANCEUR* schedular, SIMULATOR* simulator, EXECUTION_QUEUE execution_queue);
+
 
 } SIMULATOR;
