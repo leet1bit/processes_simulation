@@ -192,7 +192,7 @@ process_return op_execute_process(ORDONNANCEUR* self, PCB* process) {
     return response;
 }
 
-ORDONNANCEUR* op_work(ORDONNANCEUR* self) {
+ORDONNANCEUR* op_run(ORDONNANCEUR* self) {
 
 
 

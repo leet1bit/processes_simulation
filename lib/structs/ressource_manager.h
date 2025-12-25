@@ -5,6 +5,10 @@
 #include "structs/ressource.h"
 
 
+typedef enum {
+    DONE, ERROR
+} init_rm;
+
 
 typedef struct {
     RESSOURCE_ELEMENT* ressources; // again using malloc to allocate N ressources
@@ -20,5 +24,7 @@ typedef struct {
     bool (*mark_ressource_unavailable)(RESSOURCE ressource);
     bool (*check_if_ressource_available)(RESSOURCE ressource); // if available return  if not return 0
     
+    init_rm (*init)(struct RESSOURCE_MANAGER* self);
+
 } RESSOURCE_MANAGER;
 

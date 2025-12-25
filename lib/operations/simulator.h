@@ -5,8 +5,8 @@
 #include "structs/process_manager.h"
 #include "structs/ressource_manager.h"
 #include "structs/ressource.h"
-#include "structs/schedular.h"
 #include "operations/helpers/simulator.h"
+#include "structs/schedular.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -161,22 +161,15 @@ WORK_RETURN op_work(SIMULATOR* self, ORDONNANCEUR* schedular, RESSOURCE_MANAGER*
 
     self->process_manager = process_manager_local; // asign it to the simulator
 
-    self->process_manager->work(self->process_manager);
+    // self->process_manager->work(self->process_manager);
 
-    // -----------------------
+    // // -----------------------
 
-    ORDONNANCEUR* schedular = self->create_schedular(options.algorithm, options.quantum); // create schedular
+    // ORDONNANCEUR* schedular = self->create_schedular(options.algorithm, options.quantum); // create schedular
 
-    self->schedular = schedular; // asign it to the simulator
+    // self->schedular = schedular; // asign it to the simulator
 
-    OPTIONS returned = self->schedular->work(self->schedular);
-
-
-
-
-
-
-
+    // OPTIONS response = self->schedular->sched_work(self->schedular, options);
 
 
 

@@ -1,0 +1,43 @@
+
+
+1 - initialization
+--choose algorithm
+
+allocate simulator (should have a timer or clock)
+alocate process manager
+    parse csv
+    add process to process table
+        create a pcb for each process
+    add to ready queue (based on the algorithm) if rr make it circular
+    init blocked queue
+
+allocate ressource manager
+    create ressource struct for each ressource (mark them available)
+
+allocate schedular
+    (quantum if rr, null if non-rr)
+    allocate execution queue
+
+
+2 - run
+
+take the first or next element from the ready queue
+    -ordonnanceur make call to simulator which make the call to process manager to retrieve the pcb from ready queue then return it
+    --schedular check if process need ressource if yes check ressource list if available, make it unavailable then run process if not push it to blocked queue
+    *RR
+        execute for the quantum
+
+    *fcfs
+        based on the arrival time ready queue should be sorted
+        execute in order
+
+    *sjf
+        based on remaining time the ready queue should be sorted
+        -preemptive : after each time unit sort the ready queue and take first element
+
+    *priority
+
+
+
+
+

@@ -13,7 +13,7 @@ typedef enum {
     WORK_DONE, ERROR
 } WORK_RETURN;
 
-typedef struct {
+typedef struct ORDONNANCEUR_STATISTICS {
     float cpu_total_temps_usage; // somme temps cpu occup total de tout process 
     float cpu_temps_unoccuped; // temps total ou cpu n etait pas utilisé
     int context_switch; // nombre total de changement de processus
@@ -28,7 +28,7 @@ typedef struct {
 } ORDONNANCEUR_STATISTICS;
 
 
-typedef struct {
+typedef struct ORDONNANCEUR {
     Algorithms algorithm;
     PCB* exec_proc; // processus en train de s'executer
     int current_pid; // pid du processus en cours d'exec
@@ -67,12 +67,14 @@ typedef struct {
 
 
 typedef struct OPTIONS {
+
     int algorithm;
     float quantum;
+
 } OPTIONS;
 
 
-typedef struct {
+typedef struct SIMULATOR {
     ORDONNANCEUR* schedular; // pointeur vers lordonnanceur
     PROCESS_MANAGER* process_manager; // pointeur to process manaer
     RESSOURCE_MANAGER* ressource_manager; // pointeur vers ressource
@@ -98,7 +100,7 @@ typedef struct {
     ORDONNANCEUR* (*start_schedular)(Algorithms algorithm, int quantum, SIMULATOR* self); // we should pass the simulator itself's pointer to the function 
 
     // process_manager & schedular related function
-    bool (*check_ressource_disponibility)(RESSOURCE_ELEMENT* ressource_needed); // pointer or can be changed to ressource name to the ressource needed if disponible return 1 else 0
+    bool (*check_ressource_disponibility)(SIMULATOR* simulator, RESSOURCE ressource); // pointer or can be changed to ressource name to the ressource needed if disponible return 1 else 0
     bool (*signal_ressource_is_free)(RESSOURCE_ELEMENT* ressource); // can be void but just to be sure
 
     // process_manager & schedular related functions
@@ -114,10 +116,13 @@ typedef struct {
     bool (*ask_sort_rt)(SIMULATOR* self); // ask simulator to tell process manager to sort by remaining time ; pour srtf
     bool (*ask_sort_priority)(SIMULATOR* self); // ask simulator to tell process manager to sort by priority ; pour ppp
 
-    WORK_RETURN (*work) (PROCESS_MANAGER* process_manager, ORDONNANCEUR* schedular, SIMULATOR* simulator, EXECUTION_QUEUE execution_queue);
 
     PROCESS_MANAGER* (*create_process_manager)(void);
     RESSOURCE_MANAGER* (*create_ressource_manager)(void);
     ORDONNANCEUR* (*create_schedular)(Algorithms algorithm, int quantum);
+
+    WORK_RETURN (*work) (PROCESS_MANAGER* process_manager, ORDONNANCEUR* schedular, SIMULATOR* simulator, EXECUTION_QUEUE execution_queue);
+
+    OPTIONS (*ask_for_options)(void);
 
 } SIMULATOR;

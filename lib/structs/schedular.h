@@ -20,7 +20,7 @@ typedef enum {
 
 }  process_return;
 
-typedef struct {
+typedef struct ORDONNANCEUR_STATISTICS {
 
     float cpu_total_temps_usage; // somme temps cpu occup total de tout process
     float cpu_temps_unoccuped; // temps total ou cpu n etait pas utilisé
@@ -55,6 +55,8 @@ typedef struct ORDONNANCEUR {
 
     // functions
     // on start
+    OPTIONS (*init)(ORDONNANCEUR* self, OPTIONS option);
+
     EXECUTION_QUEUE* (*create_execution_queue)(void);
     ORDONNANCEUR_STATISTICS* (*create_statistics)(void);
 
@@ -77,7 +79,6 @@ typedef struct ORDONNANCEUR {
     // execute process
     process_return (*execute_process)(ORDONNANCEUR* self, PCB* process);
 
-    OPTIONS (*work)(ORDONNANCEUR* self, OPTIONS options);
 
 
 } ORDONNANCEUR;
