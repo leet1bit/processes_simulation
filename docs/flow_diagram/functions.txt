@@ -36,7 +36,9 @@ take the first or next element from the ready queue
         -preemptive : after each time unit sort the ready queue and take first element
 
     *priority
-
+        sort ready queue based on the priority
+        -preemptive : after each time unit sort the ready queue and take first element
+        
 
 
 

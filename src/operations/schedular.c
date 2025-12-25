@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "../../lib/structs/execution_queue.h"
 #include "../../lib/structs/schedular.h"
@@ -79,9 +80,9 @@ bool op_ask_sort_priority(SIMULATOR* simulator) {
     return response;
 }
 
-PCB* op_ask_for_next_ready_element(SIMULATOR* simulator, PCB* current_pcb) {
+PCB* op_sched_ask_for_next_ready_element(ORDONNANCEUR* self, PCB* current_pcb) {
 
-    PCB* response = simulator->ask_for_next_ready_element(simulator, current_pcb); 
+    PCB* response = self->simulator->simul_ask_for_next_ready_element(self->simulator, current_pcb); 
 
     return response;
 }
@@ -158,7 +159,7 @@ process_return op_execute_process(ORDONNANCEUR* self, PCB* process) {
 
     while (process->current_instruction != NULL) {
 
-        EXECUT_RESPONSE exec_instruction = self->signal_execute_instruction(self, self->in_execution_queue, process->current_instruction); // can be changed to take 5ms
+        EXECUT_RESPONSE exec_instruction = self->signal_execute_instruction(self, self->execution_queue, process->current_instruction); // can be changed to take 5ms
         
         if (exec_instruction == EXEC_SUCCESS) { // if instruction succedded
 
@@ -192,7 +193,48 @@ process_return op_execute_process(ORDONNANCEUR* self, PCB* process) {
     return response;
 }
 
-ORDONNANCEUR* op_run(ORDONNANCEUR* self) {
+ORDONNANCEUR* op_init(ORDONNANCEUR* self, SIMULATOR* simulator, OPTIONS options) {
+
+    self->simulator = simulator;
+
+    self->algorithm = options.algorithm;
+
+    self->quantum = options.quantum;
+
+    self->statistics = self->create_statistics(); // create statistics and assign it
+
+    self->execution_queue = self->create_execution_queue(); // create execution queue and assign it
+
+    return self;
+}
+
+
+WORK_RETURN execute_rr(float quantum) {
+    sleep(quantum);
+    return WORK_DONE;
+}
+
+
+WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
+    
+
+    do {
+    
+        self->exec_proc = self->sched_ask_for_next_ready_element(self->simulator, self->exec_proc); // get the next element
+
+        if (execute_rr((self->exec_proc->remaining_time < quantum) ? self->exec_proc->remaining_time : quantum) != WORK_DONE) { // if remaining time is less than the quantum then execute for remaining time not quantum else execute for quantum
+            return ERROR;
+        }
+
+
+
+
+    
+    } while (self->exec_proc != NULL);
+
+    printf("all processes are terminated\n");
+
+
 
 
 

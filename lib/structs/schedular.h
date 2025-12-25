@@ -8,7 +8,9 @@
 #include <unistd.h> // for time wait in second
 
 typedef enum {
+
     RR, SRTF, PPP, FCFS, SJF
+
 } Algorithms;
 
 typedef enum {
@@ -41,21 +43,21 @@ typedef struct ORDONNANCEUR {
     int current_pid; // pid du processus en cours d'exec
 
     float quantum; // quantum de time pour RR
-    struct tm start;
-    struct tm end;
+    time_t start;
+    time_t end;
     int cpu_time_used; // en ms: end - start
 
     float current_time;
 
     SIMULATOR* simulator; // pointeur vers simulator
-    EXECUTION_QUEUE* in_execution_queue; // pointeur vers queue d'execution
+    EXECUTION_QUEUE* execution_queue; // pointeur vers queue d'execution
 
     ORDONNANCEUR_STATISTICS* statistics; // pointeur vers les statistics du schedular
     INSTRUCTION* current_instruction; // need to be init as head
 
     // functions
     // on start
-    OPTIONS (*init)(ORDONNANCEUR* self, OPTIONS option);
+    OPTIONS (*init)(ORDONNANCEUR* self, SIMULATOR* simulator, OPTIONS option);
 
     EXECUTION_QUEUE* (*create_execution_queue)(void);
     ORDONNANCEUR_STATISTICS* (*create_statistics)(void);
@@ -68,7 +70,7 @@ typedef struct ORDONNANCEUR {
     bool (*update_process)(PCB* process, float temps_fin, float tournround, float temps_attente); // when updating temps fin mark process terminated
     bool (*ask_sort_rt)(SIMULATOR* simulator); // ask simulator to tell process manager to sort by remaining time ; pour srtf
     bool (*ask_sort_priority)(SIMULATOR* simulator); // ask simulator to tell process manager to sort by priority ; pour ppp
-    PCB* (*ask_for_next_ready_element)(PCB* current_pcb);
+    PCB* (*sched_ask_for_next_ready_element)(struct ORDONNANCEUR* self, PCB* current_pcb);
 
     // update statistics
     bool (*update_schedular_statistics) (ORDONNANCEUR_STATISTICS* schedular, float cpu_total_temps_usage, float cpu_temps_unoccupied, int context_switch, float total_temps_attente, float process_termine_count, float throughtput); // must check nullty
@@ -78,8 +80,6 @@ typedef struct ORDONNANCEUR {
 
     // execute process
     process_return (*execute_process)(ORDONNANCEUR* self, PCB* process);
-
-
 
 } ORDONNANCEUR;
 

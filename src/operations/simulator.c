@@ -37,18 +37,6 @@ SIMULATOR* op_start(SIMULATOR* self, char* path) {
     return self;
 }
 
-// void op_stop(SIMULATOR* self, char* path) {
-
-// }
-
-// void op_load_simulator(SIMULATOR* self, char* path) {
-
-// }
-
-// FILE* op_load_processus(SIMULATOR* self) {
-
-// }
-
 //initialize managers
 PROCESS_MANAGER* op_start_process_manager(SIMULATOR* self, FILE* buffer) {
 
@@ -123,7 +111,7 @@ bool op_signal_ressource_free(RESSOURCE_MANAGER* ressource_manager, RESSOURCE re
     return response;
 }
 
-PCB* op_ask_for_next_ready_element(SIMULATOR* simulator, PCB* process) {
+PCB* op_simul_ask_for_next_ready_element(SIMULATOR* simulator, PCB* process) {
     PCB* response = simulator->process_manager->get_next_ready_element(process);
 
     return response;
@@ -141,7 +129,7 @@ bool op_ask_sort_priority(SIMULATOR* simulator) {
     return response;
 }
 
-WORK_RETURN op_work(SIMULATOR* self, ORDONNANCEUR* schedular, RESSOURCE_MANAGER* ressource_manager, FILE* buffer) {
+WORK_RETURN op_init(SIMULATOR* self, ORDONNANCEUR* schedular, RESSOURCE_MANAGER* ressource_manager, FILE* buffer) {
     
     // ---------- process manager
 
@@ -162,14 +150,19 @@ WORK_RETURN op_work(SIMULATOR* self, ORDONNANCEUR* schedular, RESSOURCE_MANAGER*
  
     self->schedular = self->create_schedular(options.algorithm, options.quantum); // create schedular
 
-    self->schedular->init(self->schedular, options);
+    self->schedular->init(self->schedular, self, options);
 
+    return WORK_DONE;
+}
 
+WORK_RETURN op_run(SIMULATOR* self, OPTIONS options) {
 
-
-    // OPTIONS response = self->schedular->sched_work(self->schedular, options);
+    switch (options.algorithm) {
+        // assign schedular->select depoend on the algorithm
+    }
 
 
 
 
 }
+
