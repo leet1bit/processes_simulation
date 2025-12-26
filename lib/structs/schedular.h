@@ -81,7 +81,7 @@ typedef struct ORDONNANCEUR {
 
     // execute process    
     
-    WORK_RETURN (*select)(); // will be pointing on one of 5 functions depens on the algorithm
+    WORK_RETURN (*select)(ORDONNANCEUR* self, float quantum); // will be pointing on one of 5 functions depens on the algorithm
 
 } ORDONNANCEUR;
 

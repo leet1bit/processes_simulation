@@ -509,5 +509,4 @@ bool pro_init(PROCESS_MANAGER* self) {
     self->add_process_to_blocked_queue = op_add_process_to_blocked_queue;
 
     return true;
-
 }

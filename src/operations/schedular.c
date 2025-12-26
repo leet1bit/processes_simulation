@@ -189,6 +189,12 @@ ORDONNANCEUR* op_sched_init(ORDONNANCEUR* self, SIMULATOR* simulator, OPTIONS op
     self->update_schedular_statistics = op_update_schedular_statistics;
     self->check_ressource_disponibility = op_check_ressource_disponibility;
     self->update_process = op_update_process;
+    
+    switch (options.algorithm) {
+        case 0:
+            self->select = select_rr;
+            break;
+    }
 
 
     self->simulator = simulator;
