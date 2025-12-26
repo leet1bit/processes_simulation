@@ -142,9 +142,9 @@ WORK_RETURN op_simul_stop(SIMULATOR* self) {
 
     WORK_RETURN stop_process_manager = self->process_manager->kill(self->process_manager);
 
-    WORK_RETURN stop_ressource_manager = self->ressource_manager->kill(self->ressource_manager);
-
     WORK_RETURN stop_schedular = self->schedular->kill(self->schedular);
+
+    WORK_RETURN stop_ressource_manager = self->ressource_manager->kill(self->ressource_manager);
 
     if (stop_process_manager != WORK_DONE || stop_ressource_manager != WORK_DONE || stop_schedular != WORK_DONE) {
         return ERROR;

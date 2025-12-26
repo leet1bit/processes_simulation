@@ -7,9 +7,6 @@
 #include "../../lib/structs/ressource.h" // for RESSOURCE_ELEMENT
 #include "../../lib/structs/execution_queue.h" // for WORK_RETURN
 
-typedef enum {
-    UPDATED, ERROR
-} process_update;
 
 typedef struct PROCESS_MANAGER {
 

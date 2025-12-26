@@ -64,4 +64,5 @@ typedef struct SIMULATOR {
 
     process_update (*update_process)(struct SIMULATOR* self, PCB* pcb, time_t* temps_fin, float* cpu_temps_used); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time    
 
+    
 } SIMULATOR;

@@ -11,6 +11,18 @@ typedef enum {
     RR, SRTF, PPP, FCFS, SJF
 } Algorithms;
 
+
+typedef enum {
+    UPDATED, ERROR
+} process_update; // moved here for the compiler
+
+
+typedef enum {
+    WORK_DONE, WORK_ERROR
+} WORK_RETURN;
+
+
+
 typedef enum {
 
     FINISHED,      // Instruction executed successfully
@@ -85,7 +97,7 @@ typedef struct ORDONNANCEUR {
     bool (*check_ressource_disponibility) (RESSOURCE ressource);
     
     
-    process_update (*update_process)(struct ORDONNANCEUR* self, PCB* pcb, time_t* temps_fin, float* cpu_temps_used); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
+    process_update (*update_process)(struct ORDONNANCEUR* self, struct PCB* pcb, time_t* temps_fin, float* cpu_temps_used); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
 
     // execute process    
     

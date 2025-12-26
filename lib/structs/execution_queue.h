@@ -12,10 +12,6 @@ typedef enum {
 
 } EXECUT_RESPONSE;
 
-typedef enum {
-    WORK_DONE, WORK_ERROR
-} WORK_RETURN; // moved here because the compiler doesnt reconize it when it's file is loded last
-
 
 typedef struct EXECUTION_QUEUE {
 

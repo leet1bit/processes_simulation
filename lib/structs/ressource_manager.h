@@ -28,10 +28,9 @@ typedef struct {
     
     init_rm (*init)(struct RESSOURCE_MANAGER* self);
 
+    bool (*free_ressource_list) (struct RESSOURCE_MANAGER* self);
+
     WORK_RETURN (*kill)(struct RESSOURCE_MANAGER* self);
-
-    bool (*free_ressource_list) (struct RESSOURCE_MANAGER* self)
-
 
 } RESSOURCE_MANAGER;
 
