@@ -13,7 +13,7 @@
 #include "../../lib/structs/process_manager.h"
 #include "../../lib/structs/simulator.h"
 
-#include "../../src/operations/execution_queue.c"
+#include "../../src/implementation/execution_queue.c"
 
 ORDONNANCEUR_STATISTICS* op_create_statistics() {   
 

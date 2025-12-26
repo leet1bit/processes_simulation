@@ -7,9 +7,9 @@
 #include "../../lib/structs/ressource.h"
 #include "../../lib/structs/schedular.h"
 
-#include "../../src/operations/schedular.c"
-#include "../../src/operations/ressource_manager.c"
-#include "../../src/operations/process_manager.c"
+#include "../../src/implementation/schedular.c"
+#include "../../src/implementation/ressource_manager.c"
+#include "../../src/implementation/process_manager.c"
 
 #include <stdio.h>
 #include <stdlib.h>

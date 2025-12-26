@@ -5,7 +5,7 @@
 #include "../../lib/structs/process.h"
 #include "../../lib/structs/simulator.h"
 
-#include "../../src/operations/helpers/process_manager.c"
+#include "../../src/implementation/helpers/process_manager.c"
 
 
 // initialization

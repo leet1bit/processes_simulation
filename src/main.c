@@ -1,6 +1,6 @@
 
 #include "../lib/structs/simulator.h"
-#include "../src/operations/simulator.c"
+#include "../src/implementation/simulator.c"
 
 
 int main() {

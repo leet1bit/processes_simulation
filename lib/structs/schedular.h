@@ -40,8 +40,6 @@ typedef struct OPTIONS {
 
 } OPTIONS; // moved here because of compiler
 
-
-
 typedef struct ORDONNANCEUR_STATISTICS {
 
     float cpu_total_temps_usage; // somme temps cpu occup total de tout process
