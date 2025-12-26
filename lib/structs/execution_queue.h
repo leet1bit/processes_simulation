@@ -1,7 +1,8 @@
 #pragma once
 
-#include "structs/process.h"
-#include "structs/schedular.h"
+#include "../../lib/structs/process.h"
+#include "../../lib/structs/schedular.h"
+#include "../../lib/structs/ressource.h"
 
 typedef enum {
 
@@ -10,6 +11,10 @@ typedef enum {
     EXEC_ERROR         // General error
 
 } EXECUT_RESPONSE;
+
+typedef enum {
+    WORK_DONE, WORK_ERROR
+} WORK_RETURN; // moved here because the compiler doesnt reconize it when it's file is loded last
 
 
 typedef struct EXECUTION_QUEUE {
@@ -22,7 +27,7 @@ typedef struct EXECUTION_QUEUE {
     int process_id; // l'pid du current process
     float quantum;
 
-    ORDONNANCEUR* schedular;
+    struct ORDONNANCEUR* schedular;
 
     bool (*init)(struct EXECUTION_QUEUE* self);
 
@@ -33,5 +38,7 @@ typedef struct EXECUTION_QUEUE {
     bool (*mark_ressource_unavailable) (RESSOURCE ressource); // mark ressource indisponible
 
     WORK_RETURN (*execute_rr)(float quantum); // execute for round robin
+
+    WORK_RETURN (*kill)(struct EXECUTION_QUEUE* self);
 
 } EXECUTION_QUEUE;

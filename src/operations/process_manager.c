@@ -482,7 +482,29 @@ PCB* op_get_next_ready_element(PCB* current_pcb) {
     return next;
 }
 
-PROCESS_MANAGER* op_run(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
+
+WORK_RETURN proc_kill(PROCESS_MANAGER* self) {
+
+    free(self);
+
+    return WORK_DONE;
+}
+
+bool op_free_process_list(PCB* process_table_head) {
+
+    PCB* next = process_table_head;
+
+    while (next != NULL) {
+        PCB* temp = next;
+        next = next->pid_sibling_next;
+        free(temp);
+    }
+
+    return true;
+}
+
+
+bool pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
 
     self->processus_buffer = buffer;
 
@@ -496,17 +518,15 @@ PROCESS_MANAGER* op_run(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
     self->ready_queue_head = ready_queue_head;
     self->blocked_queue_head = blocked_queue_head;
 
-    return self;
-}
-
-bool pro_init(PROCESS_MANAGER* self) {
-
+    
     self->create_process_table = op_create_process_table;
     self->create_ready_queue = op_create_ready_queue;
     self->create_blocked_queue = op_create_blocked_queue;
     self->push_to_ready_queue = op_push_to_ready_queue;
     self->delete_from_ready_queue = op_delete_from_ready_queue;
     self->add_process_to_blocked_queue = op_add_process_to_blocked_queue;
+    self->free_process_list = op_free_process_list;
+
 
     return true;
 }

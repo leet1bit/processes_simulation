@@ -19,3 +19,10 @@ bool ex_init(EXECUTION_QUEUE* self) {
 
     return true;
 }
+
+WORK_RETURN ex_kill(EXECUTION_QUEUE* self) {
+    
+    free(self);
+    
+    return WORK_DONE;
+}

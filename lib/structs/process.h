@@ -1,10 +1,10 @@
 #pragma once
 
 
-#include "structs/process.h" 
+#include "../../lib/structs/process.h" 
 #include <time.h>
 #include <stdbool.h>
-#include "structs/ressource.h" // for ressource enum
+#include "../../lib/structs/ressource.h" // for ressource enum
 
 typedef enum {
     READY, BLOCKED, EXECUTION, TERMINATED
@@ -69,4 +69,7 @@ typedef struct PCB {
     // struct PCB* (*get_previous_pcb)(struct PCB* self);
     struct PCB* (*define_next)(struct PCB* self, struct PCB* next);
     struct PCB* (*define_previous)(struct PCB* self, struct PCB* previous);
+
+    WORK_RETURN (*kill)(struct PCB* self);
+
 } PCB;

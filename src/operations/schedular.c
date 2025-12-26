@@ -95,6 +95,14 @@ bool op_check_ressource_disponibility(SIMULATOR* simulator, RESSOURCE ressource)
     return result;
 }
 
+// // process_manager & schedular related function
+// bool op_check_ressource_disponibility(SIMULATOR* self, RESSOURCE ressource_needed) {
+
+//     bool response = self->ressource_manager->check_if_ressource_available(ressource_needed);
+
+//     return response;
+// }
+
 
 // update statistics
 bool op_update_schedular_statistics(ORDONNANCEUR* self, float* exec_time, float* burst, float* temp_attente, bool finished) { // must check nullty
@@ -117,7 +125,24 @@ bool op_update_schedular_statistics(ORDONNANCEUR* self, float* exec_time, float*
 }
 
 
+WORK_RETURN sched_kill(ORDONNANCEUR* self) {
+
+    free(self->statistics);
+    
+    if (self->execution_queue->kill(self->execution_queue) != WORK_DONE) {
+        return ERROR;
+    }
+
+    free(self);
+
+    return WORK_DONE;
+}
+
+
+
 WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
+
+    printf('hiiiiiit');
 
     do {
     
@@ -189,6 +214,7 @@ ORDONNANCEUR* op_sched_init(ORDONNANCEUR* self, SIMULATOR* simulator, OPTIONS op
     self->update_schedular_statistics = op_update_schedular_statistics;
     self->check_ressource_disponibility = op_check_ressource_disponibility;
     self->update_process = op_update_process;
+    self->kill = sched_kill;
     
     switch (options.algorithm) {
         case 0:

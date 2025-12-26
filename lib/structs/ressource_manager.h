@@ -2,11 +2,11 @@
 
 
 
-#include "structs/ressource.h"
+#include "../../lib/structs/ressource.h"
 
 
 typedef enum {
-    DONE, ERROR
+    DONE, INIT_ERROR
 } init_rm;
 
 
@@ -25,6 +25,9 @@ typedef struct {
     bool (*check_if_ressource_available)(RESSOURCE ressource); // if available return  if not return 0
     
     init_rm (*init)(struct RESSOURCE_MANAGER* self);
+
+    WORK_RETURN (*kill)(struct RESSOURCE_MANAGER* self);
+
 
 } RESSOURCE_MANAGER;
 
