@@ -5,6 +5,7 @@
 
 #include "../../lib/structs/process.h" // for PCB struct
 #include "../../lib/structs/ressource.h" // for RESSOURCE_ELEMENT
+#include "../../lib/structs/execution_queue.h" // for WORK_RETURN
 
 typedef enum {
     UPDATED, ERROR
@@ -57,6 +58,6 @@ typedef struct PROCESS_MANAGER {
 
     WORK_RETURN (*kill) (struct PROCESS_MANAGER* self);
 
-    bool (*free_process_list)(struct PCB* process_table_head);
+    bool (*free_process_table)(struct PCB* process_table_head);
     
 } PROCESS_MANAGER;

@@ -485,7 +485,7 @@ PCB* op_get_next_ready_element(PCB* current_pcb) {
 
 WORK_RETURN proc_kill(PROCESS_MANAGER* self) {
 
-    if (self->free_process_list(self->process_table_head) != true) {
+    if (self->free_process_table(self->process_table_head) != true) {
         fprintf(stderr, "ERROR ON: proc_kill failed to free the process list");
         return ERROR;
     }
@@ -530,7 +530,7 @@ bool pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
     self->push_to_ready_queue = op_push_to_ready_queue;
     self->delete_from_ready_queue = op_delete_from_ready_queue;
     self->add_process_to_blocked_queue = op_add_process_to_blocked_queue;
-    self->free_process_list = op_free_process_list;
+    self->free_process_table = op_free_process_list;
 
     return true;
 }

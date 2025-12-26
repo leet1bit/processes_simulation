@@ -150,6 +150,7 @@ WORK_RETURN op_simul_stop(SIMULATOR* self) {
         return ERROR;
     }
 
+
     return WORK_DONE;
 
 }

@@ -5,6 +5,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include "../../lib/structs/ressource.h" // for ressource enum
+#include "../../lib/structs/execution_queue.h" // for WORK_RETURN
 
 typedef enum {
     READY, BLOCKED, EXECUTION, TERMINATED

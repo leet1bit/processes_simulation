@@ -13,6 +13,8 @@ int main() {
 
     simulator->init(simulator, buffer);
 
+    simulator->stop(simulator);
+
     fclose(buffer);
 
     return 0;

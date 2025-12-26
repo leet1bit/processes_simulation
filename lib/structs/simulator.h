@@ -25,7 +25,7 @@ typedef struct SIMULATOR {
     // functions
     // requiring functions
     struct SIMULATOR* (*start)(struct SIMULATOR* self, char* path); // so void is the return type, (*start) is the function pointer [we need to create or define the function outside then assign the fucntion created to that pointer], then after the arguments
-    void (*stop)(struct SIMULATOR* self, char* path); // same thing here
+    void (*stop)(struct SIMULATOR* self); // same thing here
     struct SIMULATOR* (*run_simulator)(struct SIMULATOR* self, char* path); // same
     FILE* (*load_processus)(char* file_name); // will read a file so it's return type is FILE*
 
@@ -62,7 +62,6 @@ typedef struct SIMULATOR {
 
     WORK_RETURN (*run)(struct SIMULATOR* self,OPTIONS options); // will be pointing on one of 5 functions depens on the algorithm
 
-    process_update (*update_process)(struct SIMULATOR* self, PCB* pcb, time_t* temps_fin, float* cpu_temps_used); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
-
+    process_update (*update_process)(struct SIMULATOR* self, PCB* pcb, time_t* temps_fin, float* cpu_temps_used); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time    
 
 } SIMULATOR;
