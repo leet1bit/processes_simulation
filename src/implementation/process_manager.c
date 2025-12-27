@@ -27,12 +27,12 @@ PCB* op_create_process_table(FILE* buffer) {
 
 
 PCB* op_get_next_process_table(PROCESS_MANAGER* self, PCB* current_pcb) {
-
     if (current_pcb == NULL) {
-        return NULL; //because in first time using it we pass the process table head
+        return NULL;
     }
-
-    return current_pcb->pid_sibling_next; // if not null we pass the next and next can be null
+    
+    // SIMPLE: Just return the next PCB in the list
+    return current_pcb->pid_sibling_next;
 }
 
 PCB* op_insert_after_ready(PROCESS_MANAGER* self, PCB* after_pcb, PCB* pcb_to_insert) { // if return the ready queue head then it's inserted if NULL then it's not inserted
@@ -364,8 +364,13 @@ bool op_update_read_queue(PROCESS_MANAGER* self, bool circular) {
 
     do {
         if (next != NULL && next->statistics != NULL) {
+            printf("1111111111111111111111111");
+            printf("---------temp arive%d\n-------------self-temp%d", next->statistics->temps_arrive, self->temps);
             if (next->statistics->temps_arrive == self->temps) {
+                printf("222222222222222222222222");
                 if (self->push_to_ready_queue(self, next, circular) != NULL) { // push it to the end of ready_queue
+                    printf("STUUUUUUUCK");
+                    // stuck
                     inserted++;
                 } else {
                     fprintf(stderr, "ERROR ON: op_update_read_queue , not inserted");
@@ -373,9 +378,9 @@ bool op_update_read_queue(PROCESS_MANAGER* self, bool circular) {
                 }
             }
         }
-
+        print_pcb(next);
         next = self->get_next_process_table(self, next);
-
+        print_pcb(next);
     } while (next != NULL);
 
     if (inserted != 0) {
@@ -385,6 +390,10 @@ bool op_update_read_queue(PROCESS_MANAGER* self, bool circular) {
 
     return false;
 }
+
+
+
+
 
 //pcb related
 // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
@@ -418,6 +427,7 @@ process_update op_pro_update_process(PROCESS_MANAGER* self, PCB* pcb, time_t *te
 }
 
 
+
 // ready queue related
 PCB* op_push_to_ready_queue(PROCESS_MANAGER* self, PCB* pcb, bool circular) {
 
@@ -441,8 +451,8 @@ PCB* op_push_to_ready_queue(PROCESS_MANAGER* self, PCB* pcb, bool circular) {
         // Circular list implementation
         // Find the last element (one before head)
         PCB* last = ready_queue_head;
+
         while (last->pid_sibling_next != ready_queue_head) {
-            printf("hhhhh");
             last = last->pid_sibling_next;
         }
         
@@ -453,7 +463,6 @@ PCB* op_push_to_ready_queue(PROCESS_MANAGER* self, PCB* pcb, bool circular) {
         // Linear list implementation
         PCB* last = ready_queue_head;
         while (last->pid_sibling_next != NULL) {
-            printf("hhhhh");
             last = last->pid_sibling_next;
         }
         

@@ -219,29 +219,6 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
 
         printf("\n----temps %f\n", temps);
         printf("----temps %f\n", proc_temps);
-
-        // should update temps arrive
-
-        if ((float)(int)temps > proc_temps) {// get floor like 1.2365 -> 1.0000
-
-            proc_temps = (float)(int)temps;
-
-            if (self->sched_update_process_manager(self, proc_temps) == false) {
-
-                fprintf(stderr, "ERROR ON: sched_update_process_manager failed\n");
-                return UPDATE_ERROR;
-            
-            } else {
-
-                printf("########## hit update readu_queue\n");
-
-                if (self->update_ready_queue(self, true) == false) {
-                    fprintf(stderr, "ERROR ON: update_ready_queue failed\n");
-                    return UPDATE_ERROR;
-                }
-            }
-
-        }
     
         self->exec_proc = self->sched_ask_for_next_ready_element(self, self->exec_proc); // get the next element
 
@@ -314,6 +291,29 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
                     return UPDATE_ERROR;
                 }
 
+            }
+
+        }
+
+        // should update temps arrive
+
+        if ((float)(int)temps > proc_temps) {// get floor like 1.2365 -> 1.0000
+
+            proc_temps = (float)(int)temps;
+
+            if (self->sched_update_process_manager(self, proc_temps) == false) {
+
+                fprintf(stderr, "ERROR ON: sched_update_process_manager failed\n");
+                return UPDATE_ERROR;
+            
+            } else {
+
+                printf("########## hit update readu_queue\n");
+
+                if (self->update_ready_queue(self, true) == false) {
+                    fprintf(stderr, "ERROR ON: update_ready_queue failed\n");
+                    return UPDATE_ERROR;
+                }
             }
 
         }

@@ -66,6 +66,8 @@ typedef struct PROCESS_MANAGER {
 
     bool (*update_read_queue) (struct PROCESS_MANAGER* self, bool circular);
 
+    void (*make_process_table_linear) (struct PROCESS_MANAGER* self);
+
     // setters
 
     bool (*update_self_temps) (struct PROCESS_MANAGER* self, float temps);
