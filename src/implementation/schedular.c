@@ -150,27 +150,49 @@ WORK_RETURN sched_kill(ORDONNANCEUR* self) {
 
 WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
 
-    do {
+    self->exec_proc = NULL;
+    bool fetch_next = true;
+
+    while (self->simulator->process_manager->ready_queue_head != NULL) {
     
-        self->exec_proc = self->sched_ask_for_next_ready_element(self, self->exec_proc); // get the next element
+        if (fetch_next) {
+            self->exec_proc = self->sched_ask_for_next_ready_element(self, self->exec_proc);
+        }
+        fetch_next = true; // Default to fetching next in subsequent iterations
+
+        if (self->exec_proc == NULL) {
+             // Restart from head if we reached the end (or if list was modified)
+             self->exec_proc = self->sched_ask_for_next_ready_element(self, NULL);
+             if (self->exec_proc == NULL) break; // List is empty
+        }
 
         print_pcb(self->exec_proc);
 
-        if (self->execution_queue->execute_rr((self->exec_proc->remaining_time < quantum) ? self->exec_proc->remaining_time : quantum) != WORK_DONE) { // if remaining time is less than the quantum then execute for remaining time not quantum else execute for quantum
+        float time_to_run = (self->exec_proc->remaining_time < quantum) ? self->exec_proc->remaining_time : quantum;
+
+        if (self->execution_queue->execute_rr(time_to_run) != WORK_DONE) { 
             return WORK_ERROR;
         }
 
         time_t daba;
         time_t* temps_fin_ptr = NULL;
-        float time_used; // Variable to track actual time used
 
-        if (self->exec_proc->remaining_time < quantum) {
+        if (self->exec_proc->remaining_time <= quantum) {
 
             float n_quantum = self->exec_proc->remaining_time;
-            time_used = n_quantum; // Use the actual remaining time
             
             time(&daba);
             temps_fin_ptr = &daba;
+
+            // Save stats locally BEFORE freeing the process
+            float burst = self->exec_proc->burst_time;
+            float arrive = self->exec_proc->statistics->temps_arrive;
+            float fin = (float)daba;
+            float attente = (fin - arrive) - burst; // Calculate wait time: Turnaround - Burst
+
+            // Find the next process BEFORE deleting the current one
+            PCB* next_node = self->sched_ask_for_next_ready_element(self, self->exec_proc);
+            if (next_node == self->exec_proc) next_node = NULL; // Handle single element case
 
             // Pass n_quantum instead of quantum
             process_update update = self->update_process(self, self->exec_proc, temps_fin_ptr, &n_quantum);
@@ -180,15 +202,17 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
             }
 
             if (
-                self->update_schedular_statistics(self, &n_quantum, &self->exec_proc->burst_time, &self->exec_proc->statistics->temps_attente, true) != true // changed not good
+                self->update_schedular_statistics(self, &n_quantum, &burst, &attente, true) != true 
             ) {
                 return UPDATE_ERROR;
             }
             
+            // Update exec_proc to the next node we found earlier
+            self->exec_proc = next_node;
+            fetch_next = false; // Skip fetching in the next loop iteration since we already have the correct next node
+            
         } else {
 
-            time_used = quantum; // Use the full quantum
-            
             process_update update = self->update_process(self, self->exec_proc, temps_fin_ptr, &quantum);
 
             if (update != UPDATED) {
@@ -203,7 +227,7 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
 
         }
 
-    } while (self->exec_proc != NULL);
+    } 
 
     printf("all processes are terminated\n");
 

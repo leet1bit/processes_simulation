@@ -373,6 +373,7 @@ PCB* op_delete_from_ready_queue(PCB* ready_queue_head, PCB* pcb) {// the chaine 
             current = next;
         }
         
+        if (pcb->statistics) free(pcb->statistics);
         free(pcb);
         return hold;
     }
@@ -394,6 +395,7 @@ PCB* op_delete_from_ready_queue(PCB* ready_queue_head, PCB* pcb) {// the chaine 
             
             // jump it and free it
             prcd->pid_sibling_next = current->pid_sibling_next;
+            if (current->statistics) free(current->statistics);
             free(current);
             break;
         }
