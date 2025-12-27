@@ -42,13 +42,13 @@ typedef struct PROCESS_MANAGER {
     struct PCB* (*get_next_ready_element) (struct PROCESS_MANAGER* self, PCB* current_pcb);
 
     // bloqued queue related
-    struct PCB* (*add_process_to_blocked_queue)(struct PROCESS_MANAGER* self, PCB* pcb); // should covert pcb to BLOCKED_QUEUE_ELEMENT then push it
+    bool (*add_process_to_blocked_queue)(struct PROCESS_MANAGER* self, PCB* pcb); // should covert pcb to BLOCKED_QUEUE_ELEMENT then push it
     struct PCB* (*delete_from_blocked_queue)(struct PROCESS_MANAGER* self, PCB* pcb); // return the element 
     struct PCB* (*get_blocked_queue_element)(struct PROCESS_MANAGER* self, PCB* pcb); // return the element with the ressource needed from pcb
     struct PCB* (*get_ready_queue_head) (struct PROCESS_MANAGER* self); // return the element with the ressource needed from pcb
     
     // assign function to the pcb
-    PCB* (*assign_functions_to_pcb)(PCB* pcb);
+    PCB* (*assign_functions_to_pcb)(struct PROCESS_MANAGER* self, PCB* pcb);
 
     bool (*init)(struct PROCESS_MANAGER* self, FILE* buffer, int algorithm);
 

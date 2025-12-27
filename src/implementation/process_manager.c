@@ -581,6 +581,7 @@ bool op_pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
     self->get_blocked_queue_element = op_get_blocked_queue_element;
     self->delete_from_blocked_queue = op_delete_from_blocked_queue;
     self->delete_from_ready_queue = op_delete_from_ready_queue;
+    self->add_process_to_blocked_queue = op_add_process_to_blocked_queue;
     
     // self->sort_ready_by_fc = op_sort_ready_by_fc;
     // self->sort_ready_by_rt = op_sort_ready_by_rt;

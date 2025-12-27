@@ -4,6 +4,7 @@
 #include "../../lib/structs/simulator.h" // for SIMULATOR
 #include "../../lib/structs/execution_queue.h" // for the exec queue
 #include "../../lib/structs/ressource.h"
+#include "../../lib/structs/process.h"
 
 #include <unistd.h> // for time wait in second
 
@@ -16,6 +17,9 @@ typedef enum {
     UPDATED, UPDATE_ERROR
 } process_update; // moved here for the compiler
 
+typedef enum {
+    PROCESS_BLOCKED, RESSOURCES_AVAILABLE, PROCESS_ERROR
+} sched_ressources_return;
 
 typedef enum {
     WORK_DONE, WORK_ERROR
@@ -26,7 +30,7 @@ typedef enum {
     FINISHED,      // Instruction executed successfully
     RESSOURCE_NEEDED,
     QUANTUM_EXPIRED,
-    PROCESS_ERROR         // General error
+    PROCESS_ERRORE         // General error
 
 }  process_return;
 
@@ -95,7 +99,8 @@ typedef struct ORDONNANCEUR {
     // check instruction disponibility
     bool (*check_ressource_disponibility) (struct ORDONNANCEUR* self, RESSOURCE ressource);
     
-    
+    sched_ressources_return (*check_ressources) (struct ORDONNANCEUR* self, struct PCB* exec_proc);
+
     process_update (*update_process)(struct ORDONNANCEUR* self, struct PCB* pcb, time_t* temps_fin, float* cpu_temps_used); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
 
     // execute process    
@@ -105,9 +110,9 @@ typedef struct ORDONNANCEUR {
     WORK_RETURN (*kill) (struct ORDONNANCEUR* self);
 
     // push to blocked queue if ressource is not disponible
-    push_return (*sched_push_to_blocked_queue)(struct ORDONNANCEUR* self, PCB* pcb);
+    push_return (*sched_push_to_blocked_queue)(struct ORDONNANCEUR* self, struct PCB* pcb);
 
-    PCB* (*sched_get_ready_queue_head) (ORDONNANCEUR* self);
+    struct PCB* (*sched_get_ready_queue_head) (struct ORDONNANCEUR* self);
 
 } ORDONNANCEUR;
 
