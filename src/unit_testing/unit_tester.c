@@ -15,9 +15,6 @@
   
 #include "../../lib/structs/simulator.h"
 #include "../../src/implementation/simulator.c"
-#include "../../src/implementation/process_manager.c"
-#include "../../src/implementation/ressource_manager.c"
-#include "../../src/implementation/helpers/process_manager.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,6 +83,13 @@ void print_pcb_chaine(PCB* pcb_head) {
     PCB* temp = pcb_head;
     bool circular = false;
 
+    printf("hiiiit print_pcb_chaine");
+
+    if (pcb_head == NULL) {
+        printf("PCB is NULL\n");
+        return;
+    }
+
     while (temp != NULL) {
         if (circular == true && temp == pcb_head) {
             break;
@@ -93,6 +97,7 @@ void print_pcb_chaine(PCB* pcb_head) {
         circular = true;
         print_pcb(temp);
         temp = temp->pid_sibling_next;
+        fflush(stdout); // Ensure output is printed before any potential crash
     }
 
 
@@ -223,6 +228,52 @@ gcc -Wall -Wextra -std=c11 \
 */
 
 
+void print_ressource(RESSOURCE_ELEMENT* ressource) {
+    printf("ressource name: %s\n", ressource->ressource_name);
+    switch (ressource->ressource)
+    {
+    case 0:
+        printf("ressource type: AAA\n");
+        break;
+    
+    case 1:
+        printf("ressource type: BBB\n");
+        break;
+
+    
+    case 2:
+        printf("ressource type: CCC\n");
+        break;
+
+    
+    case 3:
+        printf("ressource type: DDD\n");
+        break;
+
+    
+    case 4:
+        printf("ressource type: EEE\n");
+        break;
+    
+    case 5:
+        printf("ressource type: FFF\n");
+        break;
+    default:
+        break;
+    }
+    printf("ressource availability: %d\n", ressource->disponibilite);
+}
+
+void print_ressources_list(RESSOURCE_MANAGER* ressource_manager) {
+
+    RESSOURCE_ELEMENT* ressources_head = ressource_manager->ressources;
+
+    while (ressources_head != NULL) {
+        print_ressource(ressources_head);
+        ressources_head = ressources_head->next_ressource;
+    }
+}
+
 
 void test_runing() {
 
@@ -231,11 +282,14 @@ void test_runing() {
     printf("hit main\n\n\n");
 
     FILE* buffer = fopen("data.csv", "r");
+    if (buffer == NULL) {
+        perror("ERROR: Failed to open data.csv");
+        exit(1);
+    }
 
     simulator->init = op_simul_init;
 
     simulator->init(simulator, buffer);
-
 
     simulator->stop(simulator);
 
@@ -267,7 +321,7 @@ void testing_parser() {
 
 
 // testing the  op_pro_init  : initialization of process manger
-void test_process_manager_initialization() {
+void test_process_manager_initialization() { 
 
 
     FILE* f = fopen("/home/zeus/projects/processus_simulation/src/unit_testing/data_testing.csv", "r");
@@ -298,6 +352,60 @@ void test_process_manager_initialization() {
 }
 
 
+// test ressource manager initialization
+void test_ressource_manager_initialization() {
+
+    RESSOURCE_MANAGER* ressource_manager = (RESSOURCE_MANAGER*)malloc(sizeof(RESSOURCE_MANAGER));
+
+    if (ressource_manager == NULL) {
+        fprintf(stderr, "ERROR ON: error while allocating the ressource_manager\n");
+        exit(1);
+    }
+
+    ressource_manager->init = op_rm_init; // assign the initializer function
+
+    ressource_manager->init(ressource_manager);
+
+    print_ressources_list(ressource_manager);
+   
+}
+
+
+// initialization is tested and work weally fine
+void test_simulator_initialization() { 
+
+   SIMULATOR* simulator = (SIMULATOR*)malloc(sizeof(SIMULATOR));
+
+    
+    printf("hit main\n\n\n");
+
+    FILE* buffer = fopen("/home/zeus/projects/processus_simulation/src/unit_testing/data_testing.csv", "r");
+    if (buffer == NULL) {
+        perror("ERROR: Failed to open data.csv");
+        exit(1);
+    }
+
+    simulator->init = op_simul_init;
+
+
+    simulator->init(simulator, buffer);
+
+    printf("hit print_pcb_chaine\n\n\n");
+    fflush(stdout);
+    print_pcb_chaine(simulator->process_manager->ready_queue_head); 
+
+    if (simulator->ressource_manager && simulator->ressource_manager->ressources) {
+        print_ressources_list(simulator->ressource_manager);
+    }
+
+    simulator->stop(simulator);
+
+    fclose(buffer);
+
+    return 0;
+}
+
+
 
 int main() {
     // testing_process_table_creation_and_ready_queue();
@@ -324,7 +432,7 @@ int main() {
 
     // test_runing();
 
-    test_process_manager_initialization();
+    test_simulator_initialization();
 
     // testing_parser();
 
