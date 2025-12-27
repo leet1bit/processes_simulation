@@ -10,12 +10,6 @@ WORK_RETURN execute_rr(float quantum) {
     return WORK_DONE;
 }
 
-bool ex_init(EXECUTION_QUEUE* self) {
-
-    self->execute_rr = execute_rr;
-
-    return true;
-}
 
 WORK_RETURN ex_kill(EXECUTION_QUEUE* self) {
     
@@ -23,3 +17,15 @@ WORK_RETURN ex_kill(EXECUTION_QUEUE* self) {
 
     return WORK_DONE;
 }
+
+
+
+bool ex_init(EXECUTION_QUEUE* self) {
+
+    self->execute_rr = execute_rr;
+    self->kill = ex_kill;
+
+    return true;
+}
+
+

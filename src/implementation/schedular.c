@@ -127,13 +127,21 @@ bool op_update_schedular_statistics(ORDONNANCEUR* self, float* exec_time, float*
 
 WORK_RETURN sched_kill(ORDONNANCEUR* self) {
 
+    printf("execution_queue hit killed\n\n\n");
+
+
     free(self->statistics);
     
     if (self->execution_queue->kill(self->execution_queue) != WORK_DONE) {
+
+        printf("execution_queue error killed\n\n\n");
+    
         return WORK_ERROR;
     }
 
     free(self);
+
+    printf("schedular killed\n\n\n");
 
     return WORK_DONE;
 }
@@ -202,8 +210,6 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
 }
 
 ORDONNANCEUR* op_sched_init(ORDONNANCEUR* self, SIMULATOR* simulator, OPTIONS options) {
-
-    printf("hiiit op_sched_init\n\n\n");
 
     // function assigning
     self->create_execution_queue = op_create_execution_queue;

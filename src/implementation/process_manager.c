@@ -42,6 +42,8 @@ PCB* op_create_ready_queue(PCB* pcb, bool circular) {  // we dont pass the algo 
 
     // Perform a deep copy of the PCB
     *ready_queue_head = *pcb;
+    ready_queue_head->pid_sibling_next = NULL; // Detach from the original list to avoid corruption
+
     // Allocate new memory for statistics and copy the data
     ready_queue_head->statistics = (PROCESS_STATISTICS*)malloc(sizeof(PROCESS_STATISTICS));
     if (ready_queue_head->statistics == NULL) {
@@ -497,6 +499,11 @@ bool op_free_process_list(PCB* process_table_head) {
 
 bool op_pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
 
+    if (buffer == NULL) {
+        fprintf(stderr, "ERROR ON: op_pro_init, buffer is NULL\n");
+        return false;
+    }
+
     // --------- function assigning
     self->create_process_table = op_create_process_table;
     self->create_ready_queue = op_create_ready_queue;
@@ -506,10 +513,18 @@ bool op_pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
     self->add_process_to_blocked_queue = op_add_process_to_blocked_queue;
     self->free_process_table = op_free_process_list;
     self->update_process = op_pro_update_process;
+    self->kill = proc_kill;
+    self->get_next_ready_element = op_get_next_ready_element;
+    self->get_blocked_queue_element = op_get_blocked_queue_element;
+    self->delete_from_blocked_queue = op_delete_from_blocked_queue;
+    // self->sort_ready_by_fc = op_sort_ready_by_fc;
+    // self->sort_ready_by_rt = op_sort_ready_by_rt;
+    // self->sort_ready_by_priority = op_sort_ready_by_priority;
+    // self->sort_ready_by_burst = op_sort_ready_by_burst;
+
     
     // --------------------------
 
-    printf("finished inside asigning function\n\n\n");
 
     self->processus_buffer = buffer;
 
@@ -518,8 +533,6 @@ bool op_pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
     self->ready_queue_head = self->create_ready_queue(self->process_table_head, (algorithm == 0 ? true : false)); // if it's rr then circular
 
     self->blocked_queue_head = self->create_blocked_queue();
-
-    printf("finished inside op_pro_init\n\n\n");
 
     return true;
 }

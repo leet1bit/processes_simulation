@@ -31,7 +31,7 @@ typedef struct parser_return {
     int instructions_count;
     int memoire;
     float burst;
-    float temps_creation;
+    time_t temps_creation;
     float temps_arrive;
     bool unvalid_process_csv_check;
 } parser_return;
@@ -333,6 +333,9 @@ PCB* extract_from_buffer(FILE* csv_buffer) {
                     memset(pcb, 0, sizeof(PCB));
                     memset(statistics, 0, sizeof(PROCESS_STATISTICS));
                     pcb->statistics = statistics;
+
+                    process_count++; // Increment for the last process
+                    pcb->pid = process_count; // Set the PID
                     
                     // Copy data (similar to above)
                     if (strlen(paresed_buffer->process_name) <= 20) {

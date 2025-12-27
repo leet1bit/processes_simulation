@@ -151,7 +151,6 @@ WORK_RETURN op_simul_stop(SIMULATOR* self) {
         return WORK_ERROR;
     }
 
-
     return WORK_DONE;
 
 }
@@ -232,6 +231,13 @@ RESSOURCE_MANAGER* op_create_ressource_manager() {
 
 WORK_RETURN op_simul_init(SIMULATOR* self, FILE* buffer) {
 
+    if (buffer == NULL) {
+        fprintf(stderr, "ERROR ON: op_simul_init, buffer is NULL\n");
+        return WORK_ERROR;
+    }
+
+    // ------- simulator
+
     self->run = op_run;
     self->update_process = op_sched_update_process;
     self->check_ressource_disponibility = op_simul_check_instruction_disponibility;
@@ -244,22 +250,17 @@ WORK_RETURN op_simul_init(SIMULATOR* self, FILE* buffer) {
 
     
     // ---------- process manager
-    printf("hit op_simul_init\n\n\n");
 
     OPTIONS options = self->ask_for_options();
-
-    printf("hit finished ask_for_options\n\n\n");
     
     self->process_manager = self->create_process_manager(); // create process manager
 
     self->process_manager->init = op_pro_init; // assign the initializer function
-
-    printf("finished process_manager init\n\n\n");
-
+    
     self->process_manager->init(self->process_manager, buffer, options.algorithm);
-
+    
+    
     // ---------- ressource list
-    printf("hit create_ressource_manager\n\n\n");
 
     self->ressource_manager = self->create_ressource_manager(); // create ressource manager
 
@@ -267,8 +268,8 @@ WORK_RETURN op_simul_init(SIMULATOR* self, FILE* buffer) {
 
     self->ressource_manager->init(self->ressource_manager);
 
+
     // ---------- schedular
-    printf("hit create_schedular\n\n\n");
 
     self->schedular = self->create_schedular(options.algorithm, options.quantum); // create schedular    
 
@@ -276,7 +277,6 @@ WORK_RETURN op_simul_init(SIMULATOR* self, FILE* buffer) {
 
     self->schedular->init(self->schedular, self, options); // then init it
 
-    // ------- simulator
 
     return WORK_DONE;
 }
