@@ -15,12 +15,13 @@ typedef struct PROCESS_MANAGER {
     struct PCB* ready_queue_head; // pointer to ready chaine can be circular for RR
     struct PCB* blocked_queue_head; // pointer to blocked
     FILE* processus_buffer;
+    float temps;
     // RESSOURCE* ressources; // in the retrieving should retrieve ressources needed also if a ressource doesn't match the enumeration throw an error (ressource anavailable)
 
     // functions
     // on startypedef struct PROCESS_MANAGER
     struct PCB* (*create_process_table)(FILE* buffer); // need to be assigned to process_table field and update the process_count field// create a chaine circulaire ou non circular
-    struct PCB* (*create_ready_queue)(PCB* process_table_head, bool circular); // size which is process count field)
+    struct PCB* (*create_ready_queue)(PROCESS_MANAGER* self, PCB* process_table_head, bool circular); // size which is process count field)
     // READY_QUEUE_ELEMENT* (*create_ready_queue, PCB* pcb_head)(bool circular); // size which is process count field
     struct PCB* (*create_blocked_queue)(); // will initialize by size 0 i think
 
@@ -55,5 +56,12 @@ typedef struct PROCESS_MANAGER {
     WORK_RETURN (*kill) (struct PROCESS_MANAGER* self);
 
     bool (*free_process_table)(struct PCB* process_table_head);
+
+    struct PCB* (*get_next_process_table) (struct PROCESS_MANAGER* self, struct PCB* current_pcb);
+
+    struct PCB* (*insert_after_ready) (PROCESS_MANAGER* self, PCB* after_pcb, PCB* pcb_to_insert);
+
+    void (*free_ready_queue) (struct PCB* head);
+
     
 } PROCESS_MANAGER;
