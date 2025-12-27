@@ -70,4 +70,9 @@ typedef struct SIMULATOR {
 
     bool (*simul_update_process_manager) (struct SIMULATOR* self, FILE* processus_buffer, float* temps);
 
+    float (*get_max_arrival_time) (struct SIMULATOR* self);
+
+    bool (*update_ready_queue) (struct SIMULATOR* self, bool circular);
+
+
 } SIMULATOR;

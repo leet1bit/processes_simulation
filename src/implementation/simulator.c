@@ -239,13 +239,22 @@ RESSOURCE_MANAGER* op_create_ressource_manager() {
     return ressource_manager;
 }
 
-
+bool op_simul_update_ready_queue(SIMULATOR* self, bool circular) {
+    return self->process_manager->update_read_queue(self->process_manager, circular);
+}
 
 
 WORK_RETURN op_simul_work(SIMULATOR* self, OPTIONS* options) {
 
-    self->schedular->select(self->schedular, self->schedular->quantum);
+    WORK_RETURN sched_work = self->schedular->select(self->schedular, self->schedular->quantum);
 
+    if (sched_work != WORK_DONE) {
+
+        fprintf(stderr, "ERROR ON: op_simul_work returned WORK_ERROR\n");
+        return WORK_ERROR;
+    
+    }
+    
     return WORK_DONE;
 }
 
@@ -259,7 +268,10 @@ PCB* op_simul_get_ready_queue_head(SIMULATOR* self) {
     return self->process_manager->get_ready_queue_head(self->process_manager);
 }
 
+float op_simul_get_max_arrival_time(SIMULATOR* self) {
 
+    return self->process_manager->get_max_arrival_time(self->process_manager);
+}
 
 WORK_RETURN op_simul_init(SIMULATOR* self, FILE* buffer) {
 
@@ -283,8 +295,10 @@ WORK_RETURN op_simul_init(SIMULATOR* self, FILE* buffer) {
     self->simul_get_ready_queue_head = op_simul_get_ready_queue_head;
     self->simul_push_to_blocked_queue = op_simul_push_to_blocked_queue;
     self->simul_update_process_manager = op_simul_update_process_manager;
+    self->get_max_arrival_time = op_simul_get_max_arrival_time;
+    self->update_ready_queue = op_simul_update_ready_queue;
 
-    
+
     // ---------- process manager
 
     self->options = self->ask_for_options();

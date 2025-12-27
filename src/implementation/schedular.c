@@ -201,13 +201,51 @@ sched_ressources_return op_check_ressources(ORDONNANCEUR* self, PCB* exec_proc) 
     return RESSOURCES_AVAILABLE;
 }
 
+bool op_sched_update_process_manager(struct ORDONNANCEUR* self, float temps) {
+
+    return self->simulator->simul_update_process_manager(self->simulator, NULL, &temps); // NULL because of file buffer we wont use it here
+}
+
 WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
+
+    float max_arrival_time = self->get_max_arrival_time(self);
+
+    float temps = 0;
+    float proc_temps = 0;
 
     printf("hiiiiiit select_rr\n\n\n");
 
     do {
+
+        printf("\n----temps %f\n", temps);
+        printf("----temps %f\n", proc_temps);
+
+        // should update temps arrive
+
+        if ((float)(int)temps > proc_temps) {// get floor like 1.2365 -> 1.0000
+
+            proc_temps = (float)(int)temps;
+
+            if (self->sched_update_process_manager(self, proc_temps) == false) {
+
+                fprintf(stderr, "ERROR ON: sched_update_process_manager failed\n");
+                return UPDATE_ERROR;
+            
+            } else {
+
+                printf("########## hit update readu_queue\n");
+
+                if (self->update_ready_queue(self, true) == false) {
+                    fprintf(stderr, "ERROR ON: update_ready_queue failed\n");
+                    return UPDATE_ERROR;
+                }
+            }
+
+        }
     
         self->exec_proc = self->sched_ask_for_next_ready_element(self, self->exec_proc); // get the next element
+
+        print_pcb(self->exec_proc);
 
         if (self->exec_proc  != NULL) {
 
@@ -236,6 +274,9 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
 
             if (self->exec_proc->remaining_time < quantum) {
 
+                temps += self->exec_proc->remaining_time;
+
+
                 float n_quantum = self->exec_proc->remaining_time;
                 time_used = n_quantum; // Use the actual remaining time
                 
@@ -257,6 +298,8 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
                 
             } else {
 
+                temps += quantum;
+
                 time_used = quantum; // Use the full quantum
                 
                 process_update update = self->update_process(self, self->exec_proc, temps_fin_ptr, &quantum);
@@ -275,18 +318,31 @@ WORK_RETURN select_rr(ORDONNANCEUR* self, float quantum) {
 
         }
 
-        // should update temps arrive
-
     } while (self->exec_proc != NULL);
 
-    printf("all processes are terminated\n");
+
+    if (temps >= max_arrival_time) {
+        printf("Scheduler terminated: All processes completed\n");
+    } else {
+        printf("Scheduler terminated early (time: %.1f, max arrival: %.1f)\n", 
+        temps, max_arrival_time);
+    }
 
     return WORK_DONE;
 }
 
+
 push_return op_sched_push_to_blocked_queue(ORDONNANCEUR* self, PCB* pcb) {
 
     return self->simulator->simul_push_to_blocked_queue(self->simulator, pcb);
+}
+
+float op_sched_get_max_arrival_time(ORDONNANCEUR* self) {
+    return self->simulator->get_max_arrival_time(self->simulator);
+}
+
+bool op_sched_update_ready_queue(ORDONNANCEUR* self, bool circular) {
+    return self->simulator->update_ready_queue(self->simulator, circular);
 }
 
 
@@ -308,6 +364,9 @@ ORDONNANCEUR* op_sched_init(ORDONNANCEUR* self, SIMULATOR* simulator, OPTIONS* o
     self->sched_push_to_blocked_queue = op_sched_push_to_blocked_queue;
     self->sched_get_ready_queue_head = op_sched_get_ready_queue_head;
     self->check_ressources = op_check_ressources;
+    self->sched_update_process_manager = op_sched_update_process_manager;
+    self->get_max_arrival_time = op_sched_get_max_arrival_time;
+    self->update_ready_queue = op_sched_update_ready_queue;
     
     switch (options->algorithm) {
         case 0:

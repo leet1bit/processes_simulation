@@ -114,6 +114,12 @@ typedef struct ORDONNANCEUR {
 
     struct PCB* (*sched_get_ready_queue_head) (struct ORDONNANCEUR* self);
 
+    bool (*sched_update_process_manager) (struct ORDONNANCEUR* self, float temps);
+
+    bool (*update_ready_queue) (struct ORDONNANCEUR* self, bool circular);
+
+    float (*get_max_arrival_time) (struct ORDONNANCEUR* self);
+
 } ORDONNANCEUR;
 
 // like n9dr n3ti l ordonnanceur process i3tih l execution_queue

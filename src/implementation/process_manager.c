@@ -249,6 +249,22 @@ PCB* op_sort_ready_by_rt(PROCESS_MANAGER* process_manager) { // copy past and ch
     return sorted_head;
 }
 
+
+float op_find_max_arrival_time(PROCESS_MANAGER* self) {
+    float max_arrival = 0.0f;
+    PCB* current = self->process_table_head;
+    
+    while (current != NULL) {
+        if (current->statistics != NULL && 
+            current->statistics->temps_arrive > max_arrival) {
+            max_arrival = current->statistics->temps_arrive;
+        }
+        current = current->pid_sibling_next;
+    }
+    return max_arrival;
+}
+
+
 PCB* op_sort_ready_by_priority(PROCESS_MANAGER* process_manager) {
 
     PCB* ready_queue_head = process_manager->ready_queue_head;
@@ -336,10 +352,10 @@ PCB* op_create_blocked_queue() {
 }
 
 
-bool op_update_read_queue(PROCESS_MANAGER* self) {
+bool op_update_read_queue(PROCESS_MANAGER* self, bool circular) {
 
     PCB* next = self->process_table_head;
-    bool inserted = false;
+    int inserted = 0;
 
     // Safety check: if process table is empty, return false
     if (next == NULL) {
@@ -349,8 +365,11 @@ bool op_update_read_queue(PROCESS_MANAGER* self) {
     do {
         if (next != NULL && next->statistics != NULL) {
             if (next->statistics->temps_arrive == self->temps) {
-                if (self->push_to_ready_queue(self, next) != NULL) { // push it to the end of ready_queue
-                    inserted = true;    
+                if (self->push_to_ready_queue(self, next, circular) != NULL) { // push it to the end of ready_queue
+                    inserted++;
+                } else {
+                    fprintf(stderr, "ERROR ON: op_update_read_queue , not inserted");
+                    return false;
                 }
             }
         }
@@ -359,7 +378,12 @@ bool op_update_read_queue(PROCESS_MANAGER* self) {
 
     } while (next != NULL);
 
-    return inserted;
+    if (inserted != 0) {
+        printf("-------------insezrt %d-----------", inserted);
+        return true;
+    }
+
+    return false;
 }
 
 //pcb related
@@ -395,7 +419,7 @@ process_update op_pro_update_process(PROCESS_MANAGER* self, PCB* pcb, time_t *te
 
 
 // ready queue related
-PCB* op_push_to_ready_queue(PROCESS_MANAGER* self, struct PCB* pcb) {
+PCB* op_push_to_ready_queue(PROCESS_MANAGER* self, PCB* pcb, bool circular) {
 
     PCB* ready_queue_head = self->get_ready_queue_head(self);
 
@@ -403,40 +427,39 @@ PCB* op_push_to_ready_queue(PROCESS_MANAGER* self, struct PCB* pcb) {
         return ready_queue_head;
     }
 
-    // Initialize new PCB's next pointer
-    pcb->pid_sibling_next = NULL;
-
     if (ready_queue_head == NULL) {
-        // First element - make it circular (point to itself)
-        pcb->pid_sibling_next = pcb;
+        // First element
+        if (circular) {
+            pcb->pid_sibling_next = pcb;  // Circular: point to itself
+        } else {
+            pcb->pid_sibling_next = NULL;  // Linear: point to NULL
+        }
         return pcb;
     }
 
-    // Find the last element
-    PCB* last = ready_queue_head;
-    
-    // Check if list is circular
-    if (ready_queue_head->pid_sibling_next == ready_queue_head) {
-        // Single element circular list
-        ready_queue_head->pid_sibling_next = pcb;
-        pcb->pid_sibling_next = ready_queue_head; // Make it circular
-    } else {
-        // Multi-element list, find last
-        while (last->pid_sibling_next != ready_queue_head && last->pid_sibling_next != NULL) {
+    if (circular) {
+        // Circular list implementation
+        // Find the last element (one before head)
+        PCB* last = ready_queue_head;
+        while (last->pid_sibling_next != ready_queue_head) {
+            printf("hhhhh");
             last = last->pid_sibling_next;
         }
         
-        // Insert at end
+        // Insert pcb between last and head
         last->pid_sibling_next = pcb;
-        
-        // Check if it was circular
-        if (last->pid_sibling_next == ready_queue_head) {
-            // It was circular, maintain circularity
-            pcb->pid_sibling_next = ready_queue_head;
-        } else {
-            // It was linear, keep it linear
-            pcb->pid_sibling_next = NULL;
+        pcb->pid_sibling_next = ready_queue_head;
+    } else {
+        // Linear list implementation
+        PCB* last = ready_queue_head;
+        while (last->pid_sibling_next != NULL) {
+            printf("hhhhh");
+            last = last->pid_sibling_next;
         }
+        
+        // Append to end
+        last->pid_sibling_next = pcb;
+        pcb->pid_sibling_next = NULL;
     }
     
     return ready_queue_head;
@@ -649,7 +672,9 @@ bool op_free_process_list(PCB* process_table_head) {
     return true;
 }
 
-
+float op_proc_get_max_arrival_time(PROCESS_MANAGER* self) {
+    return self->max_arrival_time;
+}
 
 
 bool op_pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
@@ -679,6 +704,8 @@ bool op_pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
     self->free_ready_queue = op_free_ready_queue;
     self->update_read_queue = op_update_read_queue;
     self->update_self_temps = op_update_self_temps;
+    self->find_max_arrival_time = op_find_max_arrival_time;
+    self->get_max_arrival_time = op_proc_get_max_arrival_time;
 
     // self->sort_ready_by_fc = op_sort_ready_by_fc;
     // self->sort_ready_by_rt = op_sort_ready_by_rt;
@@ -700,6 +727,8 @@ bool op_pro_init(PROCESS_MANAGER* self, FILE* buffer, int algorithm) {
     self->ready_queue_head = self->create_ready_queue(self, self->process_table_head, (algorithm == 0 ? true : false)); // if it's rr then circular
 
     self->blocked_queue_head = self->create_blocked_queue();
+
+    self->max_arrival_time = self->find_max_arrival_time(self);
 
     return true;
 }

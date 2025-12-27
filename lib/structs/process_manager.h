@@ -16,12 +16,13 @@ typedef struct PROCESS_MANAGER {
     struct PCB* blocked_queue_head; // pointer to blocked
     FILE* processus_buffer;
     float temps;
+    float max_arrival_time;
     // RESSOURCE* ressources; // in the retrieving should retrieve ressources needed also if a ressource doesn't match the enumeration throw an error (ressource anavailable)
 
     // functions
     // on startypedef struct PROCESS_MANAGER
     struct PCB* (*create_process_table)(FILE* buffer); // need to be assigned to process_table field and update the process_count field// create a chaine circulaire ou non circular
-    struct PCB* (*create_ready_queue)(PROCESS_MANAGER* self, PCB* process_table_head, bool circular); // size which is process count field)
+    struct PCB* (*create_ready_queue)(struct PROCESS_MANAGER* self, PCB* process_table_head, bool circular); // size which is process count field)
     // READY_QUEUE_ELEMENT* (*create_ready_queue, PCB* pcb_head)(bool circular); // size which is process count field
     struct PCB* (*create_blocked_queue)(); // will initialize by size 0 i think
 
@@ -37,7 +38,7 @@ typedef struct PROCESS_MANAGER {
     process_update (*update_process)(struct PROCESS_MANAGER* self, PCB* pcb, time_t* temps_fin, float* cpu_temps_used); // with nullty check; updating temps_fin = market_terminated = update_turnround ; updating cpu_temps_used = updating_remaining_time
 
     //ready queue related
-    struct PCB* (*push_to_ready_queue)(struct PROCESS_MANAGER* self, struct PCB* pcb); // LIST CREATED NEED TO BEE FREE AFRTER ASSIGNING IT TO the proces_manager ready queue
+    struct PCB* (*push_to_ready_queue)(struct PROCESS_MANAGER* self, struct PCB* pcb, bool circular); // LIST CREATED NEED TO BEE FREE AFRTER ASSIGNING IT TO the proces_manager ready queue
     struct PCB* (*delete_from_ready_queue)(struct PCB* ready_queue_head, PCB* pcb); // the chaine node should be freed
     struct PCB* (*move_process_to_ready)(struct PCB* ready_queue_head, PCB* pcb);
     struct PCB* (*get_next_ready_element) (struct PROCESS_MANAGER* self, PCB* current_pcb);
@@ -59,15 +60,18 @@ typedef struct PROCESS_MANAGER {
 
     struct PCB* (*get_next_process_table) (struct PROCESS_MANAGER* self, struct PCB* current_pcb);
 
-    struct PCB* (*insert_after_ready) (PROCESS_MANAGER* self, PCB* after_pcb, PCB* pcb_to_insert);
+    struct PCB* (*insert_after_ready) (struct PROCESS_MANAGER* self, PCB* after_pcb, PCB* pcb_to_insert);
 
     void (*free_ready_queue) (struct PCB* head);
 
-    bool (*update_read_queue) (struct PROCESS_MANAGER* self);
+    bool (*update_read_queue) (struct PROCESS_MANAGER* self, bool circular);
 
     // setters
 
     bool (*update_self_temps) (struct PROCESS_MANAGER* self, float temps);
 
+    float (*find_max_arrival_time) (struct PROCESS_MANAGER* self);
+
+    float (*get_max_arrival_time) (struct ORDONNANCEUR* self);
     
 } PROCESS_MANAGER;
